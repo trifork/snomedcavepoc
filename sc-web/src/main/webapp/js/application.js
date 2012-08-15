@@ -6,7 +6,7 @@ var treeHtml = "<span>{{concept.name}}</span><ul <li ng-repeat=\"child in concep
 
 module.controller("ConceptCtrl", function($scope, $http) {
     $scope.findConcept = function () {
-        $http.get("/concepts/test").success(function(data, status) {
+        $http.get("/concepts/search?query=" + $scope.conceptName).success(function(data, status) {
             $scope.concept = data
         })
     }
