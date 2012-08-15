@@ -19,7 +19,7 @@
             <ul class="unstyled">
                 <li ng-repeat="c in concept.childs">
                     <a href="javascript: alert('This is a work in progress');"><i class="icon-plus-sign"></i></a>
-                    &nbsp;{{c}}
+                    {{c.name}}&nbsp;<span class="badge">{{c.childs}}</span>
                 </li>
             </ul>
         </div>
