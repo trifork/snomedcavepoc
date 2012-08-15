@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app="myApp">
 <head>
     <script type="text/javascript" src="js/angular-1.0.1.js"></script>
     <script type="text/javascript" src="js/application.js"></script>
@@ -14,14 +14,7 @@
             <input class="btn" type="submit" value="Search"/>
         </form>
 
-        <div>
-            <span>{{concept.name}}</span>
-            <ul class="unstyled">
-                <li ng-repeat="c in concept.childs">
-                    <a href="javascript: alert('This is a work in progress');"><i class="icon-plus-sign"></i></a>
-                    {{c.name}}&nbsp;<span class="badge">{{c.childs}}</span>
-                </li>
-            </ul>
+        <div concept="concept">
         </div>
     </div>
 </div>
