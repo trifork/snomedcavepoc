@@ -1,5 +1,7 @@
 package dk.sst.snomedcave.config;
 
+import dk.sst.snomedcave.controllers.ConceptController;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -14,4 +16,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/*").addResourceLocations("/");
     }
 
+    @Bean
+    public ConceptController snomedController() {
+        return new ConceptController();
+    }
 }

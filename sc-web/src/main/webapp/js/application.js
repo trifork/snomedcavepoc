@@ -4,16 +4,11 @@ var module = angular.module('myApp', []);
 //var treeHtml = "<span>{{concept.name}}</span> <ul class=\"unstyled\"> <li ng-repeat=\"child in concept.childs\"> <a href=\"#"><i class="icon-plus-sign"></i></a> <div concept="child"></div> </li> </ul>"
 var treeHtml = "<span>{{concept.name}}</span><ul <li ng-repeat=\"child in concept.childs\"><div concept=\"child\"></div></li></ul>"
 
-module.controller("ConceptCtrl", function($scope) {
+module.controller("ConceptCtrl", function($scope, $http) {
     $scope.findConcept = function () {
-        $scope.concept = {name:"TEST: " + $scope.conceptName, childs:[
-            {name:"Concept a", childs:[
-                {name:"Concept c"}
-
-            ]},
-            {name:"Concept b", childs:[]}
-        ]
-        }
+        $http.get("/concepts/test").success(function(data, status) {
+            $scope.concept = data
+        })
     }
 });
 
