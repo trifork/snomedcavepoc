@@ -30,7 +30,7 @@ public class ConceptRepositoryTest {
     @Test
     public void canStoreConceptAndGetConcept() throws Exception {
         final String name = "TEST1 " + currentTimeMillis();
-        final Concept concept = conceptRepository.save(new Concept(name));
+        final Concept concept = conceptRepository.save(new Concept(1L, name));
         assertNotNull(concept);
         assertEquals(name, concept.getName());
     }
@@ -38,7 +38,7 @@ public class ConceptRepositoryTest {
     @Test
     public void canFindConceptByName() throws Exception {
         String name = "TEST2 " + currentTimeMillis();
-        conceptRepository.save(new Concept(name));
+        conceptRepository.save(new Concept(1L, name));
         Concept concept = conceptRepository.getByName(name);
         assertNotNull(concept);
         assertEquals(name, concept.getName());
@@ -49,8 +49,8 @@ public class ConceptRepositoryTest {
         final String childName = "Child " + currentTimeMillis();
         final String parentName = "Parent " + currentTimeMillis();
 
-        Concept child = new Concept(childName);
-        Concept parent = new Concept(parentName, child);
+        Concept child = new Concept(1L, childName);
+        Concept parent = new Concept(1L, parentName, child);
 
         conceptRepository.save(parent);
 

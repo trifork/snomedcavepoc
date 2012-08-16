@@ -19,17 +19,22 @@ public class Concept {
     private Long nodeId;
     @Indexed
     private String name;
+
+    @Indexed
+    private long conceptId;
+
     private Set<Concept> subConcepts = new HashSet<Concept>();
 
     public Concept() {
         //Spring-data neo4j wants a no-arg constructor
     }
 
-    public Concept(String name, Concept... subConcepts) {
-        this(name, asList(subConcepts));
+    public Concept(long conceptId, String name, Concept... subConcepts) {
+        this(conceptId, name, asList(subConcepts));
     }
 
-    public Concept(String name, Collection<Concept> subConcepts) {
+    public Concept(long conceptId, String name, Collection<Concept> subConcepts) {
+        this.conceptId = conceptId;
         this.name = name;
         this.subConcepts = new HashSet<Concept>(subConcepts);
     }
@@ -62,4 +67,7 @@ public class Concept {
                 }), ","));
     }
 
+    public long getConceptId() {
+        return conceptId;
+    }
 }

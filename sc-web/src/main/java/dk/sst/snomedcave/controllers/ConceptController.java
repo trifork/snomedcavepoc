@@ -17,10 +17,11 @@ public class ConceptController {
     private Map<String, Concept> concepts = new HashMap<String, Concept>();
 
     public ConceptController() {
-        concepts.put("B", new Concept("concept B"));
-        concepts.put("C", new Concept("concept C"));
-        concepts.put("A", new Concept("concept A", concepts.get("C")));
-        concepts.put("root", new Concept("root", concepts.get("A"), concepts.get("B")));
+        int i = 1;
+        concepts.put("B", new Concept(i++, "concept B"));
+        concepts.put("C", new Concept(i++, "concept C"));
+        concepts.put("A", new Concept(i++, "concept A", concepts.get("C")));
+        concepts.put("root", new Concept(i++, "root", concepts.get("A"), concepts.get("B")));
     }
 
     @RequestMapping("search")

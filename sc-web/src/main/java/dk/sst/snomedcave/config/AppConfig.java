@@ -1,15 +1,14 @@
 package dk.sst.snomedcave.config;
 
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import dk.sst.snomedcave.service.SnomedParser;
+import org.springframework.context.annotation.*;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @ImportResource("classpath:/Neo4jConfig.xml")
 @EnableTransactionManagement(mode = AdviceMode.PROXY)
-@ComponentScan(basePackages = {"dk.sst.snomedcave.dao"})
+@ComponentScan(basePackages = {"dk.sst.snomedcave.dao", "dk.sst.snomedcave.service"})
+@EnableScheduling
 public class AppConfig {
-
 }
