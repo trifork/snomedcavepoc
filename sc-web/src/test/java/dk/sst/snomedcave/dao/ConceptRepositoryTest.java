@@ -42,4 +42,19 @@ public class ConceptRepositoryTest {
         assertNotNull(concept);
         assertEquals(name, concept.getName());
     }
+
+    @Test
+    public void canStoreParentAndGetChilds() throws Exception {
+        final String childName = "Child " + currentTimeMillis();
+        final String parentName = "Parent " + currentTimeMillis();
+
+        Concept child = new Concept(childName);
+        Concept parent = new Concept(parentName, child);
+
+        conceptRepository.save(parent);
+
+        Concept foundChild = conceptRepository.getByName(childName);
+        assertNotNull(foundChild);
+        assertEquals(childName, foundChild.getName());
+    }
 }
