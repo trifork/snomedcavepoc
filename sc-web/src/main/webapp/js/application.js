@@ -18,6 +18,7 @@ module.controller("ConceptCtrl", function($scope, $http) {
     }
 });
 
+//TODO: consider implementing @anderhessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
 module.directive("concept", function($compile) {
     return {
         scope: {
