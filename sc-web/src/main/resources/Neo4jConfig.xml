@@ -6,4 +6,5 @@
         http://www.springframework.org/schema/data/neo4j http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd">
 
     <neo4j:config storeDirectory="target/data.db"/>
+    <neo4j:repositories base-package="dk.sst.snomedcave.dao"/>
 </beans>

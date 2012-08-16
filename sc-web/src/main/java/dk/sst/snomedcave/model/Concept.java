@@ -3,6 +3,7 @@ package dk.sst.snomedcave.model;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Transformer;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 public class Concept {
     @GraphId
     private Long nodeId;
+    @Indexed
     private String name;
     private Set<Concept> subConcepts = new HashSet<Concept>();
 

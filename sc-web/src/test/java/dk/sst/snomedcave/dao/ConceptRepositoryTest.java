@@ -1,32 +1,45 @@
 package dk.sst.snomedcave.dao;
 
 
+import dk.sst.snomedcave.config.AppConfig;
 import dk.sst.snomedcave.model.Concept;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import static java.lang.System.currentTimeMillis;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {AppConfig.class})
+@Transactional
 public class ConceptRepositoryTest {
     @Autowired
     ConceptRepository conceptRepository;
 
     @Test
-    public void canStoreConcept() throws Exception {
-        //conceptRepository.save(new Concept("a"));
+    public void springIsConfigured() throws Exception {
+        assertNotNull(conceptRepository);
+    }
+
+    @Test
+    public void canStoreConceptAndGetConcept() throws Exception {
+        final String name = "TEST1 " + currentTimeMillis();
+        final Concept concept = conceptRepository.save(new Concept(name));
+        assertNotNull(concept);
+        assertEquals(name, concept.getName());
     }
 
     @Test
     public void canFindConceptByName() throws Exception {
-        final Concept concept = new Concept("b");
-        final String name = "test";
-        concept.setName(name);
-
-        //conceptRepository.save(concept);
-
-        //final Concept foundConcept = conceptRepository.findByPropertyValue("name", name);
-
-        //assertEquals(concept.getName(), foundConcept.getName());
+        String name = "TEST2 " + currentTimeMillis();
+        conceptRepository.save(new Concept(name));
+        Concept concept = conceptRepository.findByPropertyValue("name", name);
+        assertNotNull(concept);
+        assertEquals(name, concept.getName());
     }
 }
