@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(classes = {AppConfig.class})
 @Transactional
 public class ConceptRepositoryTest {
+    @SuppressWarnings("SpringJavaAutowiringInspection Provided by <neo4j:config .../>")
     @Autowired
     ConceptRepository conceptRepository;
 
