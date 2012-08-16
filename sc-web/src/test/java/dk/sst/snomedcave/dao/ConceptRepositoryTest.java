@@ -38,7 +38,7 @@ public class ConceptRepositoryTest {
     public void canFindConceptByName() throws Exception {
         String name = "TEST2 " + currentTimeMillis();
         conceptRepository.save(new Concept(name));
-        Concept concept = conceptRepository.findByPropertyValue("name", name);
+        Concept concept = conceptRepository.getByName(name);
         assertNotNull(concept);
         assertEquals(name, concept.getName());
     }
