@@ -116,7 +116,7 @@ public class Concept {
         return String.format(
                 "{\"fullyspecifiedName\": \"%s\", \"childs\": [%s]}",
                 fullyspecifiedName,
-                StringUtils.join(CollectionUtils.collect(subConcepts, new Transformer<Concept, Object>() {
+                join(CollectionUtils.collect(subConcepts, new Transformer<Concept, Object>() {
                     @Override
                     public Object transform(Concept concept) {
                         return concept.toJson();

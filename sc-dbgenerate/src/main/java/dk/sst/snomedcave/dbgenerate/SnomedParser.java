@@ -1,27 +1,21 @@
-package dk.sst.snomedcave.service;
+package dk.sst.snomedcave.dbgenerate;
 
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.model.Concept;
 import org.apache.log4j.Logger;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Repository;
 
 import java.io.File;
 
 import static java.lang.System.currentTimeMillis;
 
-@Repository
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
     private long lastModifiedConcept = 0L;
 
-    @Autowired
     ConceptRepository conceptRepository;
 
-    @Scheduled(fixedDelay = 1000L) //One second between runs
     public void importJob() {
         parseConcepts();
     }
