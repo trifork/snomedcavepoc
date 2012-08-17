@@ -30,6 +30,6 @@ public class Neo4jConfigurationTest {
         final String name = "TestConcept " + currentTimeMillis();
         Concept concept = neo4jTemplate.save(new Concept(1l, name));
         assertNotNull(concept);
-        assertEquals(name, concept.getName());
+        assertEquals(name, concept.getFullyspecifiedName());
     }
 }

@@ -1,6 +1,5 @@
 package dk.sst.snomedcave.config;
 
-import dk.sst.snomedcave.service.SnomedParser;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

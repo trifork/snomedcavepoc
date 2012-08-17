@@ -32,16 +32,16 @@ public class ConceptRepositoryTest {
         final String name = "TEST1 " + currentTimeMillis();
         final Concept concept = conceptRepository.save(new Concept(1L, name));
         assertNotNull(concept);
-        assertEquals(name, concept.getName());
+        assertEquals(name, concept.getFullyspecifiedName());
     }
 
     @Test
     public void canFindConceptByName() throws Exception {
         String name = "TEST2 " + currentTimeMillis();
         conceptRepository.save(new Concept(1L, name));
-        Concept concept = conceptRepository.getByName(name);
+        Concept concept = conceptRepository.getByFullyspecifiedName(name);
         assertNotNull(concept);
-        assertEquals(name, concept.getName());
+        assertEquals(name, concept.getFullyspecifiedName());
     }
 
     @Test
@@ -54,8 +54,8 @@ public class ConceptRepositoryTest {
 
         conceptRepository.save(parent);
 
-        Concept foundChild = conceptRepository.getByName(childName);
+        Concept foundChild = conceptRepository.getByFullyspecifiedName(childName);
         assertNotNull(foundChild);
-        assertEquals(childName, foundChild.getName());
+        assertEquals(childName, foundChild.getFullyspecifiedName());
     }
 }
