@@ -1,8 +1,5 @@
 package dk.sst.snomedcave.dbgenerate;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.event.ContextStoppedEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Initiator {

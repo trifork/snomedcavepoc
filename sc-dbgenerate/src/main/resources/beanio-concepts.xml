@@ -15,7 +15,7 @@
         </record>
 
         <record name="concept" class="dk.sst.snomedcave.model.Concept">
-            <field name="conceptId" type="long"/>
+            <field name="conceptId"/>
             <field name="status" type="int"/>
             <field name="fullyspecifiedName"/>
             <field name="ctv3Id"/>
