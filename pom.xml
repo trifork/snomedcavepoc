@@ -25,6 +25,7 @@
         <module>sc-web</module>
         <module>sc-dbgenerate</module>
         <module>sc-core</module>
+        <module>sc-test</module>
     </modules>
 
     <dependencyManagement>

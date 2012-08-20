@@ -1,6 +1,5 @@
 package dk.sst.snomedcave.dao;
 
-import dk.sst.snomedcave.config.AppConfig;
 import dk.sst.snomedcave.model.Concept;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,7 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class})
+@ContextConfiguration(locations = "classpath:Neo4jConfig.xml")
 public class Neo4jConfigurationTest {
     @Autowired
     Neo4jTemplate neo4jTemplate;
