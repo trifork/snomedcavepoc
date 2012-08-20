@@ -27,7 +27,7 @@ public class Neo4jConfigurationTest {
     @Transactional
     public void canPutSomethingInAndGetItOut() throws Exception {
         final String name = "TestConcept " + currentTimeMillis();
-        Concept concept = neo4jTemplate.save(new Concept(1l, name));
+        Concept concept = neo4jTemplate.save(new Concept("1", name));
         assertNotNull(concept);
         assertEquals(name, concept.getFullyspecifiedName());
     }

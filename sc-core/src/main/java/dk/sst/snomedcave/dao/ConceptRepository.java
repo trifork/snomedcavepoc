@@ -7,5 +7,5 @@ public interface ConceptRepository extends GraphRepository<Concept> {
 
     Concept getByFullyspecifiedName(String fullyspecifiedName);
 
-    Concept getByConceptId(long conceptId);
+    Concept getByConceptId(String conceptId);
 }
