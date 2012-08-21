@@ -8,8 +8,24 @@
     <artifactId>snomedcavepoc</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <modules>
         <module>sc-web</module>
+        <module>sc-dbgenerate</module>
+        <module>sc-core</module>
+        <module>sc-test</module>
     </modules>
 
     <dependencyManagement>
@@ -46,5 +62,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
 </project>

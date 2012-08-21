@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beanio xmlns="http://www.beanio.org/2012/03">
+    <stream name="relationships" format="delimited">
+        <parser>
+            <property name="delimiter" value="\t"/>
+        </parser>
+        <!-- 'class' binds the header record to a java.util.HashMap -->
+        <record name="header" class="map">
+            <field name="RELATIONSHIPID" literal="RELATIONSHIPID" rid="true"/>
+            <field name="CONCEPTID1" literal="CONCEPTID1" rid="true"/>
+            <field name="RELATIONSHIPTYPE" literal="RELATIONSHIPTYPE" rid="true"/>
+            <field name="CONCEPTID2" literal="CONCEPTID2" rid="true"/>
+            <field name="CHARACTERISTICTYPE" literal="CHARACTERISTICTYPE" rid="true"/>
+            <field name="REFINABILITY" literal="REFINABILITY" rid="true"/>
+            <field name="RELATIONSHIPGROUP" literal="RELATIONSHIPGROUP" rid="true"/>
+        </record>
+
+        <record name="relationship" class="map">
+            <field name="RelationshipId"/>
+            <field name="ConceptId1"/>
+            <field name="RelationshipType"/>
+            <field name="ConceptId2"/>
+            <field name="CharacteristicType" type="int"/>
+            <field name="Refinability" type="int"/>
+            <field name="RelationshipGroup" type="int"/>
+        </record>
+    </stream>
+</beanio>

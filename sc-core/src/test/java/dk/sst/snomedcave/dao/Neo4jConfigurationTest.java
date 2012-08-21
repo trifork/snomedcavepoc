@@ -1,6 +1,5 @@
 package dk.sst.snomedcave.dao;
 
-import dk.sst.snomedcave.config.AppConfig;
 import dk.sst.snomedcave.model.Concept;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,7 @@ import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppConfig.class})
+@ContextConfiguration(locations = "classpath:Neo4jConfig.xml")
 public class Neo4jConfigurationTest {
     @Autowired
     Neo4jTemplate neo4jTemplate;
@@ -28,8 +27,8 @@ public class Neo4jConfigurationTest {
     @Transactional
     public void canPutSomethingInAndGetItOut() throws Exception {
         final String name = "TestConcept " + currentTimeMillis();
-        Concept concept = neo4jTemplate.save(new Concept(name));
+        Concept concept = neo4jTemplate.save(new Concept("1", name));
         assertNotNull(concept);
-        assertEquals(name, concept.getName());
+        assertEquals(name, concept.getFullyspecifiedName());
     }
 }

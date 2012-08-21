@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beanio xmlns="http://www.beanio.org/2012/03">
+    <stream name="concepts" format="delimited">
+        <parser>
+            <property name="delimiter" value="\t"/>
+        </parser>
+        <!-- 'class' binds the header record to a java.util.HashMap -->
+        <record name="header" class="map">
+            <field name="ConceptId" literal="CONCEPTID" rid="true"/>
+            <field name="ConceptStatus" literal="CONCEPTSTATUS" rid="true"/>
+            <field name="FullyspecifiedName" literal="FULLYSPECIFIEDNAME" rid="true"/>
+            <field name="Ctv3Id" literal="CTV3ID" rid="true"/>
+            <field name="SnomedId" literal="SNOMEDID" rid="true"/>
+            <field name="IsPrimitive" literal="ISPRIMITIVE" rid="true"/>
+        </record>
+
+        <record name="concept" class="dk.sst.snomedcave.model.Concept">
+            <field name="conceptId"/>
+            <field name="status" type="int"/>
+            <field name="fullyspecifiedName"/>
+            <field name="ctv3Id"/>
+            <field name="snomedId"/>
+            <field name="primitive" type="boolean"/>
+        </record>
+    </stream>
+</beanio>

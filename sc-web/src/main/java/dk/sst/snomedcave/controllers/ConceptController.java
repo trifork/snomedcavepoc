@@ -11,16 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.valueOf;
+
 @Controller
 @RequestMapping("/concepts/")
 public class ConceptController {
     private Map<String, Concept> concepts = new HashMap<String, Concept>();
 
     public ConceptController() {
-        concepts.put("B", new Concept("concept B"));
-        concepts.put("C", new Concept("concept C"));
-        concepts.put("A", new Concept("concept A", concepts.get("C")));
-        concepts.put("root", new Concept("root", concepts.get("A"), concepts.get("B")));
+        int i = 1;
+        concepts.put("B", new Concept(valueOf(i++), "concept B"));
+        concepts.put("C", new Concept(valueOf(i++), "concept C"));
+        concepts.put("A", new Concept(valueOf(i++), "concept A", concepts.get("C")));
+        concepts.put("root", new Concept(valueOf(i++), "root", concepts.get("A"), concepts.get("B")));
     }
 
     @RequestMapping("search")
