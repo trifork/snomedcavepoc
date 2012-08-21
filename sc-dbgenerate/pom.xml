@@ -11,9 +11,9 @@
 
     <artifactId>sc-dbgenerate</artifactId>
 
-    <build>
-
-    </build>
+    <properties>
+        <args></args>
+    </properties>
 
     <profiles>
         <profile>
@@ -33,8 +33,8 @@
                                 <phase>install</phase>
                                 <configuration>
                                     <mainClass>dk.sst.snomedcave.dbgenerate.Initiator</mainClass>
+                                    <commandlineArgs>${args}</commandlineArgs>
                                 </configuration>
-
                             </execution>
                         </executions>
                     </plugin>
