@@ -112,15 +112,4 @@ public class Concept {
         this.primitive = primitive;
     }
 
-    public String toJson() {
-        return String.format(
-                "{\"fullyspecifiedName\": \"%s\", \"childs\": [%s]}",
-                fullyspecifiedName,
-                join(CollectionUtils.collect(subConcepts, new Transformer<Concept, Object>() {
-                    @Override
-                    public Object transform(Concept concept) {
-                        return concept.toJson();
-                    }
-                }), ","));
-    }
 }
