@@ -22,7 +22,7 @@ public class Concept {
 
     int status;
 
-    @Indexed(indexType = IndexType.FULLTEXT)
+    @Indexed
     String fullyspecifiedName;
 
     String ctv3Id;
