@@ -5,13 +5,16 @@ import dk.sst.snomedcave.model.Concept;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.System.currentTimeMillis;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:Neo4jConfig.xml")
@@ -68,5 +71,15 @@ public class ConceptRepositoryTest {
         assertNotNull(concept);
         assertEquals(conceptId, concept.getConceptId());
         assertEquals(name, concept.getFullyspecifiedName());
+    }
+
+    @Test
+    public void canFindConceptInAGoogleFashionedManner() throws Exception {
+        conceptRepository.save(new Concept("1001", "Allergier over for lægemidler"));
+        conceptRepository.save(new Concept("1002", "Allergier over for panodil"));
+
+        List<Concept> concepts = conceptRepository.findByFullyspecifiedNameLike("læge");
+        assertEquals(1, concepts.size());
+        assertEquals("1001", concepts.get(0).getConceptId());
     }
 }

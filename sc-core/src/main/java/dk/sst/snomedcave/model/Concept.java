@@ -1,10 +1,9 @@
 package dk.sst.snomedcave.model;
 
-import org.apache.commons.collections15.CollectionUtils;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.support.index.IndexType;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,7 +22,7 @@ public class Concept {
 
     int status;
 
-    @Indexed
+    @Indexed(indexType = IndexType.FULLTEXT)
     String fullyspecifiedName;
 
     String ctv3Id;
