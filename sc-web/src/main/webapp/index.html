@@ -2,22 +2,81 @@
 <html ng-app="myApp">
 <head>
     <script type="text/javascript" src="js/angular-1.0.1.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="js/application.js"></script>
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <title>Hello world</title>
 </head>
 <body>
-<div class="container">
-    <div ng-controller="ConceptCtrl">
-        <form class="well form-search" ng-submit="findConcept()">
-            <input type="text" ng-model="conceptName" placeholder="Concept name" class="input-medium search-query"/>
-            <input class="btn" type="submit" value="Search"/>
-        </form>
-
-        <div concept="concept">
+<div class="container" ng-controller="IdentityCtrl">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <form class="navbar-search pull-left" ng-submit="findIdentity()">
+                <input type="text" class="search-query" placeholder="CPR" ng-model="identityCpr">
+            </form>
         </div>
     </div>
-</div>
+    <div class="row" id="identityResult" style="display: none;">
+        <div class="span12">
+            <!--form class="navbar-search pull-left" ng-submit="findIdentity()">
+                <input type="text" ng-model="identityCpr" placeholder="CPR" class="search-query"/>
+                <input class="btn" type="submit" value="Search"/>
+            </form-->
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Allergi</th>
+                    <th>Reaktion</th>
+                    <th>Alv&aring;rlighedsgrad</th>
+                    <th>Reaktionshyppighed</th>
+                    <th>Omr&aring;de</th>
+                    <th>Advarsel</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="error" ng-click="selectRegistration(1)">
+                    <td>Allergi 1</td>
+                    <td>Reaktion 1</td>
+                    <td>Meget</td>
+                    <td>Ved fuldm&aring;ne</td>
+                    <td>Stort&aring;sneglen</td>
+                    <td>JA</td>
+                </tr>
+                <tr ng-click="selectRegistration(2)">
+                    <td>Allergi 2</td>
+                    <td>Reaktion 2</td>
+                    <td>Lidt</td>
+                    <td>Dagligt</td>
+                    <td>Venstre albue</td>
+                    <td>NEJ</td>
+                </tr>
+                </tbody>
 
+            </table>
+        </div>
+        <div id="conceptBrowser" class="row" style="display: none;">
+            <div class="span9">
+                <div ng-controller="ConceptCtrl">
+                    <form class="well form-search" ng-submit="findConcept()">
+                        <input type="text" ng-model="conceptName" placeholder="Concept name"
+                               class="input-medium search-query"/>
+                        <input class="btn" type="submit" value="Search"/>
+                    </form>
+
+                    <div concept="concept"></div>
+                </div>
+            </div>
+            <div class="span3">
+
+                <div class="well well-small">Boks 1</div>
+                <div class="well well-small">Boks 2</div>
+                <div class="well well-small">Boks 3</div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
 </body>
 </html>
