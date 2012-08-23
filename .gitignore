@@ -1,2 +1,3 @@
 *.iml
 */target
+.shell_history
