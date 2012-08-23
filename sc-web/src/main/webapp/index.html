@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-    <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.js"></script>
-    <script type="text/javascript" src="js/angular-1.0.1.js"></script>
-    <script type="text/javascript" src="js/application.js"></script>
+    <script type="text/javascript" src="js/jquery-1.8.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/bootstrap.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/angular-1.0.1.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/application.js" charset="utf-8"></script>
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <title>Hello world</title>
 </head>
@@ -55,7 +55,7 @@
     <div id="conceptBrowser" class="row" style="display: none;">
         <div class="span9">
             <form class="well form-search" ng-submit="findConcept()">
-                <input id="conceptSearch" type="text" ng-model="conceptName" placeholder="Concept name" class="input-medium search-query"/>
+                <input id="conceptSearch" type="text" ng-model="conceptName" placeholder="Concept name" class="input-medium search-query" typeahead/>
                 <input class="btn" type="submit" value="Search"/>
             </form>
 

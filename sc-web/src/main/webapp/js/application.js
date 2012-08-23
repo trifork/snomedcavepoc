@@ -8,9 +8,8 @@ var treeHtml = "<span>{{concept.fullyspecifiedName}}</span>" +
             "<span concept=\"child\"></span>" +
         "</li>" +
     "</ul>"
-//var treeHtml = "<span>{{concept.name}}</span><ul <li ng-repeat=\"child in concept.childs\"><div concept=\"child\"></div></li></ul>"
 
-module.controller("IdentityCtrl", function($scope, $log) {
+module.controller("IdentityCtrl", function($scope, $log, $http) {
     $scope.findIdentity = function() {
         $scope.identityResult = $scope.identityCpr
     }
@@ -19,7 +18,9 @@ module.controller("IdentityCtrl", function($scope, $log) {
     }
 
     $scope.findConcept = function () {
-        $http.get("/concepts/search?query=" + $scope.conceptName).success(function(data, status) {
+        var conceptName = $scope.conceptName;
+        $log.info("Will lookup " + conceptName)
+        $http.get("/concepts/search?query=" + conceptName).success(function(data, status) {
             $scope.concept = data
         })
     }
@@ -50,16 +51,35 @@ module.directive("concept", function($compile) {
         scope: {
             concept: "="
         },
-        link: function(scope, elem, attrs) {
-            return elem.append($compile(treeHtml)(scope))
+        link: function(scope, elm, attrs) {
+            return elm.append($compile(treeHtml)(scope))
         }
     };
 });
 
-$(document).ready(function() {
-    $("#conceptSearch").typeahead({
-        source: function(query, process) {
-            process(["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"])
+module.directive('typeahead', function() {
+    return {
+        require: 'ngModel',
+        link: function(scope, elm, attr, ngModel) {
+            $(elm).typeahead({
+                    source: function(query, process) {
+                        process([
+                            "Allergi over for lægemidler",
+                            "Allergier over for billige lægemidler",
+                            "Allergier over for ampicillin",
+                            "Allergier over for amoxecillin",
+                            "Allergier over for hvide lægemidler",
+                            "Allergier over for Panodil",
+                            "Allergier over for placebo"
+                        ])
+                    },
+                    updater: function(item) {
+                        scope.$apply(function() {
+                            ngModel.$setViewValue(item);
+                        })
+                        return item
+                    }
+                });
         }
-    })
-})
+    };
+});
