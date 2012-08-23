@@ -1,6 +1,7 @@
 package dk.sst.snomedcave.config;
 
 import dk.sst.snomedcave.controllers.ConceptController;
+import dk.sst.snomedcave.controllers.WebUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -21,5 +22,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public ConceptController snomedController() {
         return new ConceptController();
+    }
+
+    @Bean
+    public WebUtils webUtils() {
+        return new WebUtils();
     }
 }

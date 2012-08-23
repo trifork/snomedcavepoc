@@ -2,10 +2,10 @@ package dk.sst.snomedcave.dao;
 
 
 import dk.sst.snomedcave.model.Concept;
+import dk.sst.snomedcave.model.ConceptRelation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,18 +47,22 @@ public class ConceptRepositoryTest {
     }
 
     @Test
-    public void canStoreParentAndGetChilds() throws Exception {
+    public void canStoreParentAndGetWithChilds() throws Exception {
         final String childName = "Child " + currentTimeMillis();
         final String parentName = "Parent " + currentTimeMillis();
 
-        Concept child = new Concept("1", childName);
-        Concept parent = new Concept("1", parentName, child);
+        Concept child = new Concept("2", childName);
+        Concept parent = new Concept("1", parentName, new ConceptRelation(null, child));
 
         conceptRepository.save(parent);
 
-        Concept foundChild = conceptRepository.getByFullyspecifiedName(childName);
-        assertNotNull(foundChild);
-        assertEquals(childName, foundChild.getFullyspecifiedName());
+        Concept foundParent = conceptRepository.getByConceptId("1");
+        assertNotNull(foundParent);
+        assertEquals(parentName, foundParent.getFullyspecifiedName());
+
+        List<ConceptRelation> conceptRelations = new ArrayList<ConceptRelation>(foundParent.getChilds());
+        assertEquals(1, conceptRelations.size());
+        assertEquals(child, conceptRelations.get(0).getChild());
     }
 
     @Test

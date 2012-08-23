@@ -2,6 +2,7 @@ package dk.sst.snomedcave.dbgenerate;
 
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.model.Concept;
+import dk.sst.snomedcave.model.ConceptRelation;
 import org.apache.log4j.Logger;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
@@ -73,16 +74,21 @@ public class SnomedParser {
                 }
                 String id1 = (String) rMap.get("ConceptId1");
                 String id2 = (String) rMap.get("ConceptId2");
-                Concept concept1 = conceptRepository.getByConceptId(id1);
-                Concept concept2 = conceptRepository.getByConceptId(id2);
+                String idRelationshipType = (String) rMap.get("RelationshipType");
+                Concept concept1 = getConcept(id1);
+                Concept concept2 = getConcept(id2);
+                Concept relationshipType = getConcept(idRelationshipType);
                 if (concept1 == null) {
                     logger.error("Could not find concept1 with id=" + id1);
                 }
                 else if (concept2 == null) {
                     logger.error("Could not find concept2 with id=" + id2);
                 }
+                else if (relationshipType == null) {
+                    logger.error("Could not find relationshipType with id=" + idRelationshipType);
+                }
                 else {
-                    concept1.add(concept2);
+                    concept1.add(new ConceptRelation(relationshipType, concept2));
                     conceptRepository.save(concept1);
                 }
             } else {
@@ -92,5 +98,9 @@ public class SnomedParser {
         in.close();
         logger.info("Parsed " + count + " records in " + (currentTimeMillis() - startTime) + " ms");
 
+    }
+
+    private Concept getConcept(String id) {
+        return conceptRepository.getByConceptId(id);
     }
 }

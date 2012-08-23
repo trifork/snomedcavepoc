@@ -1,8 +1,10 @@
 package dk.sst.snomedcave.model;
 
-import org.springframework.data.neo4j.annotation.GraphId;
+import org.apache.commons.lang3.builder.*;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.support.index.IndexType;
 
 import java.util.Collection;
@@ -10,12 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.join;
 
 @NodeEntity
-public class Concept {
-    @GraphId
-    private Long nodeId;
+public class Concept extends NodeObject {
 
     @Indexed
     String conceptId;
@@ -31,28 +30,29 @@ public class Concept {
 
     boolean primitive;
 
-    private Set<Concept> subConcepts = new HashSet<Concept>();
+    @Fetch @RelatedTo
+    private Set<ConceptRelation> childs = new HashSet<ConceptRelation>();
 
     public Concept() {
         //Spring-data neo4j wants a no-arg constructor
     }
 
-    public Concept(String conceptId, String fullyspecifiedName, Concept... subConcepts) {
-        this(conceptId, fullyspecifiedName, asList(subConcepts));
+    public Concept(String conceptId, String fullyspecifiedName, ConceptRelation... parents) {
+        this(conceptId, fullyspecifiedName, asList(parents));
     }
 
-    public Concept(String conceptId, String fullyspecifiedName, Collection<Concept> subConcepts) {
+    public Concept(String conceptId, String fullyspecifiedName, Collection<ConceptRelation> childs) {
         this.conceptId = conceptId;
         this.fullyspecifiedName = fullyspecifiedName;
-        this.subConcepts = new HashSet<Concept>(subConcepts);
+        this.childs = new HashSet<ConceptRelation>(childs);
     }
 
-    public void add(Concept concept) {
-        subConcepts.add(concept);
+    public void add(ConceptRelation parent) {
+        childs.add(parent);
     }
 
-    public Set<Concept> getSubConcepts() {
-        return subConcepts;
+    public Set<ConceptRelation> getChilds() {
+        return childs;
     }
 
     public String getConceptId() {
@@ -61,14 +61,6 @@ public class Concept {
 
     public void setConceptId(String conceptId) {
         this.conceptId = conceptId;
-    }
-
-    public Long getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(Long nodeId) {
-        this.nodeId = nodeId;
     }
 
     public int getStatus() {
@@ -111,4 +103,16 @@ public class Concept {
         this.primitive = primitive;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).
+                append("conceptId", conceptId).
+                append("status", status).
+                append("fullyspecifiedName", fullyspecifiedName).
+                append("ctv3Id", ctv3Id).
+                append("snomedId", snomedId).
+                append("primitive", primitive).
+                append("childs", childs).
+                toString();
+    }
 }

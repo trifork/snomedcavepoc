@@ -3,9 +3,9 @@ var module = angular.module('myApp', []);
 
 var treeHtml = "<span>{{concept.fullyspecifiedName}}</span>" +
     "<ul>" +
-        "<li ng-repeat=\"child in concept.childs\">" +
+        "<li ng-repeat=\"relation in concept.childs\">" +
             "<a href=\"#\"><i class=\"icon-plus-sign\"></i></a>&nbsp;" +
-            "<span concept=\"child\"></span>" +
+            "<span concept=\"relation.child\"></span>" +
         "</li>" +
     "</ul>"
 
