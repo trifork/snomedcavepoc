@@ -6,10 +6,13 @@ import dk.sst.snomedcave.model.ConceptRelation;
 import org.apache.log4j.Logger;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
+import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.System.currentTimeMillis;
@@ -20,9 +23,18 @@ public class SnomedParser {
     StreamFactory factory = StreamFactory.newInstance();
 
     ConceptRepository conceptRepository;
+    Neo4jTemplate neo4jTemplate;
 
-    public SnomedParser(ConceptRepository conceptRepository) {
+    Map<String, Long> idMap = new HashMap<String, Long>();
+
+    long lookupCount = 0L;
+    long lookupTime = 0L;
+    long saveCount = 0L;
+    long saveTime = 0L;
+
+    public SnomedParser(ConceptRepository conceptRepository, Neo4jTemplate neo4jTemplate) {
         this.conceptRepository = conceptRepository;
+        this.neo4jTemplate = neo4jTemplate;
     }
 
     private BeanReader getBeanReader(String file, String config) {
@@ -57,10 +69,18 @@ public class SnomedParser {
     }
 
     public void importRelationships() {
-        long startTime = currentTimeMillis();
         BeanReader in = getBeanReader("/0/sct_relationships_20120813T134009.txt", "relationships");
 
+        long idCount = 0;
+        for (Concept concept : conceptRepository.findAll()) {
+            idMap.put(concept.getConceptId(), concept.getNodeId());
+            idCount++;
+        }
+        logger.info("Added " + idCount + " ids");
+
+
         Object record;
+        long startTime = currentTimeMillis();
         int count = 0;
         while ((record = in.read()) != null) {
             if ("header".equals(in.getRecordName())) {
@@ -70,7 +90,7 @@ public class SnomedParser {
                 count++;
                 Map<String, Object> rMap = (Map<String, Object>) record;
                 if (count % 1000 == 0) {
-                    logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
+                    logger.debug(String.format("time=%d, count=%d, avgLookup=%d, avgSave=%d", currentTimeMillis() - startTime, count, lookupTime/lookupCount, saveTime/saveCount));
                 }
                 String id1 = (String) rMap.get("ConceptId1");
                 String id2 = (String) rMap.get("ConceptId2");
@@ -88,8 +108,17 @@ public class SnomedParser {
                     logger.error("Could not find relationshipType with id=" + idRelationshipType);
                 }
                 else {
-                    concept1.add(new ConceptRelation(relationshipType, concept2));
-                    conceptRepository.save(concept1);
+                    long saveStart = currentTimeMillis();
+                    Transaction transaction = neo4jTemplate.beginTx();
+                    try {
+                        concept1.add(new ConceptRelation(relationshipType, concept2));
+                        conceptRepository.save(concept1);
+                        transaction.success();
+                    } finally {
+                        transaction.finish();
+                    }
+                    saveTime += currentTimeMillis() - saveStart;
+                    saveCount++;
                 }
             } else {
                 logger.warn("unable to parse \"" + record + "\"");
@@ -101,6 +130,11 @@ public class SnomedParser {
     }
 
     private Concept getConcept(String id) {
-        return conceptRepository.getByConceptId(id);
+        long start = currentTimeMillis();
+        Long nodeId = idMap.get(id);
+        Concept one = conceptRepository.findOne(nodeId);
+        lookupTime += currentTimeMillis() - start;
+        lookupCount++;
+        return one;
     }
 }

@@ -8,5 +8,6 @@
 
     <bean id="snomedParser" class="dk.sst.snomedcave.dbgenerate.SnomedParser" >
         <constructor-arg ref="conceptRepository"/>
+        <constructor-arg ref="neo4jTemplate"/>
     </bean>
 </beans>
