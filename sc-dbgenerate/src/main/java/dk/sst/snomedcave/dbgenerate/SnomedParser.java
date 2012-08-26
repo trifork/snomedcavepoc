@@ -111,7 +111,7 @@ public class SnomedParser {
                     long saveStart = currentTimeMillis();
                     Transaction transaction = neo4jTemplate.beginTx();
                     try {
-                        concept1.add(new ConceptRelation(relationshipType, concept2));
+                        concept2.add(new ConceptRelation(relationshipType, concept1));
                         conceptRepository.save(concept1);
                         transaction.success();
                     } finally {
