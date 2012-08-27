@@ -1,15 +1,9 @@
 package dk.sst.snomedcave.dbgenerate;
 
-import dk.sst.snomedcave.dao.ConceptRepository;
-import dk.sst.snomedcave.model.Concept;
-import dk.sst.snomedcave.model.ConceptRelation;
 import org.apache.log4j.Logger;
 import org.beanio.BeanReader;
 import org.beanio.StreamFactory;
-import org.neo4j.graphdb.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
-import org.springframework.transaction.annotation.Transactional;
+import org.neo4j.unsafe.batchinsert.*;
 
 import java.io.File;
 import java.util.HashMap;
@@ -17,25 +11,35 @@ import java.util.Map;
 
 import static java.lang.System.currentTimeMillis;
 
-@Transactional
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
     StreamFactory factory = StreamFactory.newInstance();
 
-    ConceptRepository conceptRepository;
-    Neo4jTemplate neo4jTemplate;
+    Map<String, Long> conceptIds = new HashMap<String, Long>();
 
-    Map<String, Long> idMap = new HashMap<String, Long>();
+    Map<String, String> configConcept = new HashMap<String, String>() {{
+        put("type", "exact");
+    }};
+    Map<String, String> configFull = new HashMap<String, String>() {{
+        put("type", "fulltext");
+        put("to_lower_case", "true");
+    }};
 
-    long lookupCount = 0L;
-    long lookupTime = 0L;
-    long saveCount = 0L;
-    long saveTime = 0L;
+    BatchInserter inserter = BatchInserters.inserter("target/data-insert.db");
+    BatchInserterIndexProvider indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 
-    public SnomedParser(ConceptRepository conceptRepository, Neo4jTemplate neo4jTemplate) {
-        this.conceptRepository = conceptRepository;
-        this.neo4jTemplate = neo4jTemplate;
+    BatchInserterIndex conceptIndex = indexProvider.nodeIndex("Concept", configConcept);
+    BatchInserterIndex nodeTypeIndex = indexProvider.nodeIndex("__types__", configConcept);
+    BatchInserterIndex conceptFullIndex = indexProvider.nodeIndex("conceptFull", configFull);
+
+    public void finish() {
+        conceptIndex.flush();
+        nodeTypeIndex.flush();
+
+        indexProvider.shutdown();
+        inserter.shutdown();
     }
+
 
     private BeanReader getBeanReader(String file, String config) {
         File conceptsFile = new File("/Users/mwl/IdeaProjects/SnomedCave/data" + file);
@@ -53,14 +57,35 @@ public class SnomedParser {
             if ("header".equals(in.getRecordName())) {
                 //Map<String, Object> header = (Map<String, Object>) record;
                 logger.debug("Parsing header: ignoring");
-            } else if ("concept".equals(in.getRecordName())) {
+            }
+            else if ("concept".equals(in.getRecordName())) {
                 count++;
-                Concept newConcept = (Concept) record;
+                final Map<String, Object> concept = (Map<String, Object>) record;
+
+                concept.put("__type__", "dk.sst.snomedcave.model.Concept");
+                final long nodeId = inserter.createNode(concept);
+                final String conceptId = (String) concept.get("conceptId");
+                conceptIds.put(conceptId, nodeId);
+                //conceptExactIndex.add(nodeId, singletonMap("conceptId", conceptId));
+                conceptIndex.add(nodeId, new HashMap<String, Object>() {{
+                    put("__type__", "dk.sst.snomedcave.model.Concept");
+                    put("conceptId", conceptId);
+                }});
+                conceptFullIndex.add(nodeId, new HashMap<String, Object>() {{
+                    put("fullyspecifiedName", concept.get("fullyspecifiedName"));
+                }});
+
+                nodeTypeIndex.add(nodeId, new HashMap<String, Object>() {{
+                    put("className", "dk.sst.snomedcave.model.Concept");
+                }});
+                //conceptFullIndex.add(nodeId, singletonMap("fullyspecifiedName", concept.get("fullyspecifiedName")));
+
                 if (count % 1000 == 0) {
                     logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
                 }
-                conceptRepository.save(newConcept);
-            } else {
+                //conceptRepository.save(newConcept);
+            }
+            else {
                 logger.warn("unable to parse \"" + record + "\"");
             }
         }
@@ -68,6 +93,7 @@ public class SnomedParser {
         logger.info("Parsed " + count + " records in " + (currentTimeMillis() - startTime) + " ms");
     }
 
+    /*
     public void importRelationships() {
         BeanReader in = getBeanReader("/0/sct_relationships_20120813T134009.txt", "relationships");
 
@@ -137,4 +163,5 @@ public class SnomedParser {
         lookupCount++;
         return one;
     }
+    */
 }
