@@ -1,11 +1,9 @@
 package dk.sst.snomedcave.model;
 
 import org.apache.commons.lang3.builder.*;
-import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
-import org.springframework.data.neo4j.support.index.IndexType;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +28,7 @@ public class Concept extends NodeObject {
 
     boolean primitive;
 
-    @Fetch @RelatedTo
+    @RelatedTo
     private Set<ConceptRelation> childs = new HashSet<ConceptRelation>();
 
     public Concept() {
@@ -47,8 +45,8 @@ public class Concept extends NodeObject {
         this.childs = new HashSet<ConceptRelation>(childs);
     }
 
-    public void add(ConceptRelation parent) {
-        childs.add(parent);
+    public void add(ConceptRelation child) {
+        childs.add(child);
     }
 
     public Set<ConceptRelation> getChilds() {
