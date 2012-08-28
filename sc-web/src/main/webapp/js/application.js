@@ -70,7 +70,9 @@ module.directive('typeahead', function() {
                             "Allergier over for amoxecillin",
                             "Allergier over for hvide lægemidler",
                             "Allergier over for Panodil",
-                            "Allergier over for placebo"
+                            "Allergier over for placebo",
+                            "Penicillin overdose (disorder)",
+                            "Allergy to penicillin (disorder)"
                         ])
                     },
                     updater: function(item) {
