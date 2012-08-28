@@ -129,8 +129,8 @@ public class SnomedParser {
 
                 final long nodeId = inserter.createNode(relation);
 
-                inserter.createRelationship(concept1NodeId, nodeId, withName("childs"), null);
-                inserter.createRelationship(nodeId, concept2NodeId, withName("child"), null);
+                inserter.createRelationship(concept2NodeId, nodeId, withName("childs"), null);
+                inserter.createRelationship(nodeId, concept1NodeId, withName("child"), null);
                 inserter.createRelationship(nodeId, conceptTypeNodeId, withName("type"), null);
 
                 if (count % 1000 == 0) {
