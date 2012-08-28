@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.System.currentTimeMillis;
+import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
@@ -28,13 +29,20 @@ public class SnomedParser {
     BatchInserter inserter = BatchInserters.inserter("target/data-insert.db");
     BatchInserterIndexProvider indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 
-    BatchInserterIndex conceptIndex = indexProvider.nodeIndex("Concept", configConcept);
     BatchInserterIndex nodeTypeIndex = indexProvider.nodeIndex("__types__", configConcept);
-    BatchInserterIndex conceptFullIndex = indexProvider.nodeIndex("conceptFull", configFull);
+    //BatchInserterIndex relTypeIndex = indexProvider.nodeIndex("__rel-types__", configConcept);
+
+    BatchInserterIndex conceptIndex = indexProvider.nodeIndex("Concept", configConcept);
+    //BatchInserterIndex conceptFullIndex = indexProvider.nodeIndex("conceptFull", configFull);
+
+    //BatchInserterIndex relationshipIndex = indexProvider.nodeIndex("ConceptRelation", configConcept);
 
     public void finish() {
-        conceptIndex.flush();
         nodeTypeIndex.flush();
+        //relTypeIndex.flush();
+        conceptIndex.flush();
+        //conceptFullIndex.flush();
+        //relationshipIndex.flush();
 
         indexProvider.shutdown();
         inserter.shutdown();
@@ -62,28 +70,11 @@ public class SnomedParser {
                 count++;
                 final Map<String, Object> concept = (Map<String, Object>) record;
 
-                concept.put("__type__", "dk.sst.snomedcave.model.Concept");
-                final long nodeId = inserter.createNode(concept);
-                final String conceptId = (String) concept.get("conceptId");
-                conceptIds.put(conceptId, nodeId);
-                //conceptExactIndex.add(nodeId, singletonMap("conceptId", conceptId));
-                conceptIndex.add(nodeId, new HashMap<String, Object>() {{
-                    put("__type__", "dk.sst.snomedcave.model.Concept");
-                    put("conceptId", conceptId);
-                }});
-                conceptFullIndex.add(nodeId, new HashMap<String, Object>() {{
-                    put("fullyspecifiedName", concept.get("fullyspecifiedName"));
-                }});
-
-                nodeTypeIndex.add(nodeId, new HashMap<String, Object>() {{
-                    put("className", "dk.sst.snomedcave.model.Concept");
-                }});
-                //conceptFullIndex.add(nodeId, singletonMap("fullyspecifiedName", concept.get("fullyspecifiedName")));
+                saveConcept(concept);
 
                 if (count % 1000 == 0) {
                     logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
                 }
-                //conceptRepository.save(newConcept);
             }
             else {
                 logger.warn("unable to parse \"" + record + "\"");
@@ -93,17 +84,28 @@ public class SnomedParser {
         logger.info("Parsed " + count + " records in " + (currentTimeMillis() - startTime) + " ms");
     }
 
-    /*
+    private long saveConcept(final Map<String, Object> concept) {
+        concept.put("__type__", "dk.sst.snomedcave.model.Concept");
+        final long nodeId = inserter.createNode(concept);
+        final String conceptId = (String) concept.get("conceptId");
+        conceptIds.put(conceptId, nodeId);
+        conceptIndex.add(nodeId, new HashMap<String, Object>() {{
+            put("__type__", "dk.sst.snomedcave.model.Concept");
+            put("conceptId", conceptId);
+            put("fullyspecifiedName", concept.get("fullyspecifiedName"));
+        }});
+        //conceptFullIndex.add(nodeId, new HashMap<String, Object>() {{
+        //}});
+
+        nodeTypeIndex.add(nodeId, new HashMap<String, Object>() {{
+            put("className", "dk.sst.snomedcave.model.Concept");
+        }});
+
+        return nodeId;
+    }
+
     public void importRelationships() {
         BeanReader in = getBeanReader("/0/sct_relationships_20120813T134009.txt", "relationships");
-
-        long idCount = 0;
-        for (Concept concept : conceptRepository.findAll()) {
-            idMap.put(concept.getConceptId(), concept.getNodeId());
-            idCount++;
-        }
-        logger.info("Added " + idCount + " ids");
-
 
         Object record;
         long startTime = currentTimeMillis();
@@ -114,39 +116,28 @@ public class SnomedParser {
                 logger.debug("Parsing header: ignoring");
             } else if ("relationship".equals(in.getRecordName())) {
                 count++;
-                Map<String, Object> rMap = (Map<String, Object>) record;
+
+                final Map<String, Object> relation = (Map<String, Object>) record;
+
+                relation.put("__type__", "dk.sst.snomedcave.model.ConceptRelation");
+                final long concept1NodeId = getNodeId(relation.get("conceptId1"));
+                final long concept2NodeId = getNodeId(relation.get("conceptId2"));
+                final long conceptTypeNodeId = getNodeId(relation.get("relationshipType"));
+                relation.remove("conceptId1");
+                relation.remove("conceptId2");
+                relation.remove("relationshipType");
+
+                final long nodeId = inserter.createNode(relation);
+
+                inserter.createRelationship(concept1NodeId, nodeId, withName("childs"), null);
+                inserter.createRelationship(nodeId, concept2NodeId, withName("child"), null);
+                inserter.createRelationship(nodeId, conceptTypeNodeId, withName("type"), null);
+
                 if (count % 1000 == 0) {
-                    logger.debug(String.format("time=%d, count=%d, avgLookup=%d, avgSave=%d", currentTimeMillis() - startTime, count, lookupTime/lookupCount, saveTime/saveCount));
+                    logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
                 }
-                String id1 = (String) rMap.get("ConceptId1");
-                String id2 = (String) rMap.get("ConceptId2");
-                String idRelationshipType = (String) rMap.get("RelationshipType");
-                Concept concept1 = getConcept(id1);
-                Concept concept2 = getConcept(id2);
-                Concept relationshipType = getConcept(idRelationshipType);
-                if (concept1 == null) {
-                    logger.error("Could not find concept1 with id=" + id1);
-                }
-                else if (concept2 == null) {
-                    logger.error("Could not find concept2 with id=" + id2);
-                }
-                else if (relationshipType == null) {
-                    logger.error("Could not find relationshipType with id=" + idRelationshipType);
-                }
-                else {
-                    long saveStart = currentTimeMillis();
-                    Transaction transaction = neo4jTemplate.beginTx();
-                    try {
-                        concept2.add(new ConceptRelation(relationshipType, concept1));
-                        conceptRepository.save(concept1);
-                        transaction.success();
-                    } finally {
-                        transaction.finish();
-                    }
-                    saveTime += currentTimeMillis() - saveStart;
-                    saveCount++;
-                }
-            } else {
+            }
+            else {
                 logger.warn("unable to parse \"" + record + "\"");
             }
         }
@@ -155,13 +146,19 @@ public class SnomedParser {
 
     }
 
-    private Concept getConcept(String id) {
-        long start = currentTimeMillis();
-        Long nodeId = idMap.get(id);
-        Concept one = conceptRepository.findOne(nodeId);
-        lookupTime += currentTimeMillis() - start;
-        lookupCount++;
-        return one;
+    private long getNodeId(final Object conceptId) {
+        Long nodeId = conceptIds.get(conceptId);
+        if (nodeId == null) {
+            logger.warn("Could not find nodeId for conceptId=" + conceptId);
+            nodeId = saveConcept(new HashMap<String, Object>() {{
+                put("conceptId", conceptId);
+                put("status", 0);
+                put("fullyspecifiedName", "Dummy concept, " + conceptId);
+                put("ctv3Id", "");
+                put("snomedId", "dummy");
+                put("primitive", false);
+            }});
+        }
+        return nodeId;
     }
-    */
 }

@@ -26,7 +26,7 @@ public class Initiator {
 
         if (!ArrayUtils.contains(args, "--skip-relationships")) {
             System.out.println("Will import relationships");
-            //snomedParser.importRelationships();
+            snomedParser.importRelationships();
         }
 
         snomedParser.finish();
