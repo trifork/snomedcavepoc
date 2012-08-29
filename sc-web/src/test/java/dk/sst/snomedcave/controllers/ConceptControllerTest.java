@@ -52,8 +52,8 @@ public class ConceptControllerTest {
     @Test
     public void responseOwnConcept() throws Exception {
         when(conceptRepository.getByConceptId("1")).thenReturn(conceptMap.get("1"));
-        ResponseEntity<TreeResponse> entity = controller.conceptTree("1");
-        assertEquals(rootConcept.getConceptId(), entity.getBody().root.conceptId);
+        TreeResponse entity = controller.conceptTree("1");
+        assertEquals(rootConcept.getConceptId(), entity.getRoot().conceptId);
     }
 
     @Test
@@ -62,13 +62,13 @@ public class ConceptControllerTest {
 
         when(conceptRepository.getByConceptId(id)).thenReturn(conceptMap.get(id));
 
-        ResponseEntity<TreeResponse> entity = controller.conceptTree(id);
+        TreeResponse entity = controller.conceptTree(id);
 
-        assertEquals(id + "-1", entity.getBody().root.childs.get(0).conceptId);
-        assertEquals(id + "-2", entity.getBody().root.childs.get(1).conceptId);
-        assertTrue(entity.getBody().root.childs.get(1).hasChilds);
-        assertEquals(id + "-3", entity.getBody().root.childs.get(2).conceptId);
-        assertFalse(entity.getBody().root.childs.get(2).hasChilds);
+        assertEquals(id + "-1", entity.getRoot().childs.get(0).conceptId);
+        assertEquals(id + "-2", entity.getRoot().childs.get(1).conceptId);
+        assertTrue(entity.getRoot().childs.get(1).hasChilds);
+        assertEquals(id + "-3", entity.getRoot().childs.get(2).conceptId);
+        assertFalse(entity.getRoot().childs.get(2).hasChilds);
     }
 
     @Test @Ignore
@@ -79,12 +79,12 @@ public class ConceptControllerTest {
         when(conceptRepository.findOne(3l)).thenReturn(conceptMap.get("1-1-1"));
         when(conceptRepository.findOne(2l)).thenReturn(conceptMap.get("1-1"));
 
-        ResponseEntity<TreeResponse> entity = controller.conceptTree(id);
+        TreeResponse entity = controller.conceptTree(id);
 
-        assertEquals("1-1", entity.getBody().root.conceptId);
-        assertEquals("1-1-1", entity.getBody().root.childs.get(0).conceptId);
-        assertEquals("1-1-1-1", entity.getBody().root.childs.get(0).childs.get(0).conceptId);
-        assertEquals(id, entity.getBody().root.childs.get(0).childs.get(0).childs.get(0).conceptId);
+        assertEquals("1-1", entity.getRoot().conceptId);
+        assertEquals("1-1-1", entity.getRoot().childs.get(0).conceptId);
+        assertEquals("1-1-1-1", entity.getRoot().childs.get(0).childs.get(0).conceptId);
+        assertEquals(id, entity.getRoot().childs.get(0).childs.get(0).childs.get(0).conceptId);
     }
 
     private Concept create(String conceptId, Concept... childs) {

@@ -1,5 +1,8 @@
 package dk.sst.snomedcave.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dk.sst.snomedcave.dao.ConceptRelationRepository;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -24,6 +28,9 @@ public class ConceptController {
     private static Logger logger = Logger.getLogger(ConceptController.class);
     @Inject
     ConceptRepository conceptRepository;
+
+    @Inject
+    ConceptRelationRepository conceptRelationRepository;
 
     @Inject
     WebUtils webUtils;
@@ -40,13 +47,17 @@ public class ConceptController {
     }
 
     @RequestMapping(value = "tree", produces = "application/json")
-    public ResponseEntity<TreeResponse> conceptTree(@RequestParam("id") String conceptId) {
-        TreeResponse response = new TreeResponse();
+    public ResponseEntity<String> treeJson(@RequestParam("id") String conceptId) {
+        Gson gson = new GsonBuilder().create();
+        return new ResponseEntity<String>(gson.toJson(conceptTree(conceptId).getRoot()), HttpStatus.OK);
+    }
+
+    public TreeResponse conceptTree(String conceptId) {
         Concept concept = conceptRepository.getByConceptId(conceptId);
         List<ConceptNode> childs = new ArrayList<ConceptNode>(collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
             @Override
             public ConceptNode transform(ConceptRelation conceptRelation) {
-                return new ConceptNode(conceptRelation.getChild());
+                return new ConceptNode(conceptRelationRepository.findOne(conceptRelation.getNodeId()).getChild());
             }
         }));
         Collections.sort(childs, new Comparator<ConceptNode>() {
@@ -55,16 +66,10 @@ public class ConceptController {
                 return conceptNode.conceptId.compareTo(conceptNode1.conceptId);
             }
         });
-        response.root = new ConceptNode(
+        ConceptNode root = new ConceptNode(
                 concept.getConceptId(),
                 concept.getFullyspecifiedName(),
                 childs);
-        return new ResponseEntity<TreeResponse>(response, HttpStatus.OK);
-    }
-
-    private HttpHeaders getHeaders() {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return headers;
+        return new TreeResponse(root, HttpStatus.OK);
     }
 }

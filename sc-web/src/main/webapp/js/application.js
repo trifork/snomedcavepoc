@@ -1,11 +1,11 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span>{{concept.fullyspecifiedName}}</span>" +
+var treeHtml = "<span>{{concept.name}}</span>" +
     "<ul>" +
-        "<li ng-repeat=\"relation in concept.childs\">" +
+        "<li ng-repeat=\"child in concept.childs\">" +
             "<a href=\"#\"><i class=\"icon-plus-sign\"></i></a>&nbsp;" +
-            "<span concept=\"relation.child\"></span>" +
+            "<span concept=\"child\"></span>" +
         "</li>" +
     "</ul>"
 
@@ -20,7 +20,7 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
     $scope.findConcept = function () {
         var conceptName = $scope.conceptName;
         $log.info("Will lookup " + conceptName)
-        $http.get("/concepts/search?query=" + conceptName).success(function(data, status) {
+        $http.get("/concepts/tree?id=" + conceptName).success(function(data, status) {
             $scope.concept = data
         })
     }
