@@ -1,11 +1,10 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span>{{concept.fullyspecifiedName}}</span>" +
+var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;{{concept.name}}</span>" +
     "<ul>" +
-        "<li ng-repeat=\"relation in concept.childs\">" +
-            "<a href=\"#\"><i class=\"icon-plus-sign\"></i></a>&nbsp;" +
-            "<span concept=\"relation.child\"></span>" +
+        "<li ng-repeat=\"child in concept.childs\">" +
+            "<span concept=\"child\"></span>" +
         "</li>" +
     "</ul>"
 
@@ -14,13 +13,13 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
         $scope.identityResult = $scope.identityCpr
     }
     $scope.selectRegistration = function(number) {
-        $scope.selectedRegistration = "Some" + number
+        $scope.selectedRegistration = number
     }
 
     $scope.findConcept = function () {
         var conceptName = $scope.conceptName;
         $log.info("Will lookup " + conceptName)
-        $http.get("/concepts/search?query=" + conceptName).success(function(data, status) {
+        $http.get("/concepts/tree?id=" + conceptName).success(function(data, status) {
             $scope.concept = data
         })
     }
@@ -46,8 +45,30 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
 })
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
-module.directive("concept", function($compile) {
+module.directive("concept", function($compile, $http) {
+    function ConceptCtrl($scope) {
+        $scope.expandToggle = function(concept) {
+            if (concept.childs.length == 0) {
+                $http.get("/concepts/node?id=" + concept.conceptId).success(function(data, status) {
+                    concept.childs = data.childs;
+                })
+            }
+            else {
+                concept.childs = []
+            }
+        }
+        $scope.plusMinus = function(concept) {
+            if (concept && concept.childs.length > 0) {
+                return "minus"
+            }
+            else {
+                return "plus"
+            }
+        }
+    }
+
     return {
+        controller: ConceptCtrl,
         scope: {
             concept: "="
         },
@@ -70,7 +91,9 @@ module.directive('typeahead', function() {
                             "Allergier over for amoxecillin",
                             "Allergier over for hvide lægemidler",
                             "Allergier over for Panodil",
-                            "Allergier over for placebo"
+                            "Allergier over for placebo",
+                            "Penicillin overdose (disorder)",
+                            "Allergy to penicillin (disorder)"
                         ])
                     },
                     updater: function(item) {

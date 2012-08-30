@@ -1,28 +1,23 @@
 package dk.sst.snomedcave.dbgenerate;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Initiator {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             System.out.println("args[" + i + "] = " + args[i]);
         }
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("classpath:dbgenerateContext.xml");
-        SnomedParser snomedParser = context.getBean(SnomedParser.class);
-
-        for (String name : context.getBeanDefinitionNames()) {
-            System.out.println("name = " + name);
+        File db = new File("target/data-insert.db");
+        if (db.exists()) {
+            FileUtils.deleteDirectory(db);
         }
 
-        if (snomedParser == null) {
-            throw new RuntimeException("Could not start");
-        }
-
-        if (snomedParser.conceptRepository == null) {
-            throw new RuntimeException("Needs repo");
-        }
+        SnomedParser snomedParser = new SnomedParser();
 
         if (!ArrayUtils.contains(args, "--skip-concepts")) {
             System.out.println("Will import concepts");
@@ -34,6 +29,6 @@ public class Initiator {
             snomedParser.importRelationships();
         }
 
-        context.destroy();
+        snomedParser.finish();
     }
 }

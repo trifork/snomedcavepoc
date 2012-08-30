@@ -16,13 +16,13 @@
         </record>
 
         <record name="relationship" class="map">
-            <field name="RelationshipId"/>
-            <field name="ConceptId1"/>
-            <field name="RelationshipType"/>
-            <field name="ConceptId2"/>
-            <field name="CharacteristicType" type="int"/>
-            <field name="Refinability" type="int"/>
-            <field name="RelationshipGroup" type="int"/>
+            <field name="relationshipId"/>
+            <field name="conceptId1"/>
+            <field name="relationshipType"/>
+            <field name="conceptId2"/>
+            <field name="characteristicType" type="int"/>
+            <field name="refinability" type="int"/>
+            <field name="relationshipGroup" type="int"/>
         </record>
     </stream>
 </beanio>
