@@ -1,7 +1,5 @@
 package dk.sst.snomedcave.controllers;
 
-import dk.sst.snomedcave.model.Concept;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
