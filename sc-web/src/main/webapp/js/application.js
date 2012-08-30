@@ -13,7 +13,7 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
         $scope.identityResult = $scope.identityCpr
     }
     $scope.selectRegistration = function(number) {
-        $scope.selectedRegistration = "Some" + number
+        $scope.selectedRegistration = number
     }
 
     $scope.findConcept = function () {
@@ -58,7 +58,7 @@ module.directive("concept", function($compile, $http) {
             }
         }
         $scope.plusMinus = function(concept) {
-            if (concept.childs.length > 0) {
+            if (concept && concept.childs.length > 0) {
                 return "minus"
             }
             else {
