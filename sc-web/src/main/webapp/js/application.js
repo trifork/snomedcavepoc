@@ -1,10 +1,9 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span>{{concept.name}}</span>" +
+var treeHtml = "<span><a href=\"#\" ng-click='clicked(concept)'><i class=\"icon-plus-sign\"></i></a>&nbsp;{{concept.name}}</span>" +
     "<ul>" +
         "<li ng-repeat=\"child in concept.childs\">" +
-            "<a href=\"#\"><i class=\"icon-plus-sign\"></i></a>&nbsp;" +
             "<span concept=\"child\"></span>" +
         "</li>" +
     "</ul>"
@@ -47,7 +46,14 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
 module.directive("concept", function($compile) {
+    function ConceptCtrl($scope) {
+        $scope.clicked = function(concept) {
+            concept.name = "CLICKED: " + concept.name
+        }
+    }
+
     return {
+        controller: ConceptCtrl,
         scope: {
             concept: "="
         },
