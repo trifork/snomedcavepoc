@@ -1,7 +1,7 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a href=\"#\" ng-click='clicked(concept)'><i class=\"icon-plus-sign\"></i></a>&nbsp;{{concept.name}}</span>" +
+var treeHtml = "<span><a href=\"#\" ng-click='clicked(concept)'><i class=\"icon-plus-sign\"></i></a>&nbsp;{{concept.name}}, {{concept.conceptId}}</span>" +
     "<ul>" +
         "<li ng-repeat=\"child in concept.childs\">" +
             "<span concept=\"child\"></span>" +
