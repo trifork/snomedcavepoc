@@ -13,7 +13,7 @@ public class ConceptNodeTest {
         Concept child = new Concept("ID2", "CHILD2");
         Concept concept = new Concept("ID1", "NAME1", new ConceptRelation(null, child));
 
-        ConceptNode node = new ConceptNode(concept);
+        ConceptNode node = new ConceptNode(concept.getConceptId(), concept.getFullyspecifiedName());
         assertEquals("ID1", node.conceptId);
         assertEquals("NAME1", node.name);
 

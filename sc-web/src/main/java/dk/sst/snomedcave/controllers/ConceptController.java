@@ -23,13 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 import static org.apache.commons.collections15.CollectionUtils.collect;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
-import static org.neo4j.graphdb.traversal.Evaluators.endNodeIs;
 import static org.neo4j.graphdb.traversal.Evaluators.returnWhereEndNodeIs;
 
 @Controller
@@ -71,6 +73,24 @@ public class ConceptController {
         return new ResponseEntity<String>(webUtils.toJson(concept), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "node", produces = "application/json")
+    public ResponseEntity<String> nodeJson(@RequestParam("id") String conceptId) {
+        Gson gson = new GsonBuilder().create();
+        final Concept concept = conceptRepository.getByConceptId(conceptId);
+        return new ResponseEntity<String>(gson.toJson(
+                new ConceptNode(
+                        concept.getConceptId(),
+                        concept.getFullyspecifiedName(),
+                        collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
+                            @Override
+                            public ConceptNode transform(ConceptRelation relation) {
+                                Concept child = get(get(relation).getChild());
+                                return new ConceptNode(child.getConceptId(), child.getFullyspecifiedName(), child.getChilds().size() > 0);
+                            }
+                        })))
+                , HttpStatus.OK);
+    }
+
     @RequestMapping(value = "tree", produces = "application/json")
     public ResponseEntity<String> treeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
@@ -88,7 +108,7 @@ public class ConceptController {
                     @Override
                     public ConceptNode transform(ConceptRelation relation) {
                         final Concept concept = get(get(relation).getChild());
-                        return new ConceptNode(concept.getConceptId(), concept.getFullyspecifiedName());
+                        return new ConceptNode(concept.getConceptId(), concept.getFullyspecifiedName(), concept.getChilds().size() > 0);
                     }
                 }));
 
@@ -103,7 +123,7 @@ public class ConceptController {
                 for (ConceptRelation relation : concept.getChilds()) {
                     Concept child = get(get(relation).getChild());
                     if (!child.getConceptId().equals(root.conceptId)) {
-                        root.childs.add(new ConceptNode(child.getConceptId(), child.getFullyspecifiedName()));
+                        root.childs.add(new ConceptNode(child.getConceptId(), child.getFullyspecifiedName(), child.getChilds().size() > 0));
                     }
                 }
             }

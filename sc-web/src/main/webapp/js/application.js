@@ -1,7 +1,7 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a href=\"#\" ng-click='clicked(concept)'><i class=\"icon-plus-sign\"></i></a>&nbsp;{{concept.name}}, {{concept.conceptId}}</span>" +
+var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;{{concept.name}}, {{concept.conceptId}}</span>" +
     "<ul>" +
         "<li ng-repeat=\"child in concept.childs\">" +
             "<span concept=\"child\"></span>" +
@@ -45,10 +45,25 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
 })
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
-module.directive("concept", function($compile) {
+module.directive("concept", function($compile, $http) {
     function ConceptCtrl($scope) {
-        $scope.clicked = function(concept) {
-            concept.name = "CLICKED: " + concept.name
+        $scope.expandToggle = function(concept) {
+            if (concept.childs.length == 0) {
+                $http.get("/concepts/node?id=" + concept.conceptId).success(function(data, status) {
+                    concept.childs = data.childs;
+                })
+            }
+            else {
+                concept.childs = []
+            }
+        }
+        $scope.plusMinus = function(concept) {
+            if (concept.childs.length > 0) {
+                return "minus"
+            }
+            else {
+                return "plus"
+            }
         }
     }
 
