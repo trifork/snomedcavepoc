@@ -1,0 +1,101 @@
+CONCEPTID	CONCEPTSTATUS	FULLYSPECIFIEDNAME	CTV3ID	SNOMEDID	ISPRIMITIVE
+100005	1	SNOMED RT Concept (special concept)	XU006	G-3000	1
+101009	0	Quilonia ethiopica (organism)	XU0Ha	L-55535	1
+102002	0	Hemoglobin Okaloosa (substance)	XU0ZR	F-D5972	1
+103007	0	Squirrel fibroma virus (organism)	XU0oN	L-37904	1
+104001	0	Excision of lesion of patella (procedure)	XU13b	P1-18376	0
+105000	2	Poisoning by pharmaceutical excipient (disorder)	XU1LA	DD-82950	1
+106004	0	Structure of posterior carpal region (body structure)	XU1Zq	T-D8602	1
+107008	0	Structure of fetal part of placenta (body structure)	XU1pT	T-F1102	1
+108003	0	Entire condylar emissary vein (body structure)	XS0qk	T-49723	1
+109006	0	Anxiety disorder of childhood OR adolescence (disorder)	XU2Fq	D9-12000	1
+110001	0	Structure of visceral layer of Bowman's capsule (body structure)	XU2VP	T-71210	1
+111002	0	Parathyroid structure (body structure)	XaBr1	T-B7000	1
+112009	0	Bembrops anatirostris (organism)	XU2zG	L-CA201	1
+113004	0	Type-casting-machine operator (occupation)	XU3DP	J-92140	1
+114005	0	Feline calicivirus (organism)	XU3S7	L-31612	1
+115006	0	Removable appliance therapy (procedure)	75161	P8-40100	1
+116007	0	Subcutaneous tissue structure of medial surface of index finger (body structure)	XU3xx	T-03694	1
+117003	0	Rhipicephalus sanguineus (organism)	Xa7Hc	L-66131	1
+118008	0	Black buffalo weaver (organism)	XU4WX	L-A6802	1
+119000	0	Thoracoscopic partial lobectomy of lung (procedure)	XU4lt	P1-28412	0
+120006	0	Ornithine racemase (substance)	XU52C	F-6D168	1
+121005	0	Retrobulbar injection of therapeutic agent (procedure)	XU5IK	P1-A1512	1
+122003	0	Choroidal hemorrhage (disorder)	X00cp	DA-71400	0
+123008	0	Channel catfish virus disease (disorder)	XU5t3	DE-32224	1
+124002	0	Structure of coronoid process of mandible (body structure)	XU66C	T-11188	1
+125001	0	Ferrous sulfate Fe^59^ (substance)	XU6MV	C-B1123	1
+126000	0	Galactosyl-N-acetylglucosaminylgalactosylglucosylceramide alpha-galactosyltransferase (substance)	XU6ck	F-68980	1
+127009	0	Spontaneous abortion with laceration of cervix (disorder)	XU6s3	D8-04137	1
+128004	0	Hand microscope examination of skin (procedure)	XU74V	P2-40022	1
+129007	0	Homoiothermia (finding)	XU7Jh	F-03250	1
+130002	0	Hemoglobin Hopkins-II (substance)	XU7Qh	F-D5736	1
+131003	0	Dolichyl-phosphate mannosyltransferase (substance)	XU7SJ	F-68968	1
+132005	0	Serraniculus pumilio (organism)	XU7Ts	L-C7798	1
+133000	0	Percutaneous implantation of neurostimulator electrodes into neuromuscular component (procedure)	XU7VW	P1-95572	1
+134006	0	Decreased hair growth (finding)	XU7XO	F-41804	0
+135007	0	Arthrotomy of wrist joint with exploration and biopsy (procedure)	XU7Yy	P1-17303	1
+136008	0	Acacia erioloba (organism)	XU7ae	L-D6215	1
+137004	1	Retired procedure (procedure)	XURZc	P1-43D20	1
+138009	0	No past history of (contextual qualifier) (qualifier value)	XU7dw	G-0008	1
+139001	0	Felid herpesvirus 1 (organism)	XU7fY	L-36404	1
+140004	0	Chronic pharyngitis (disorder)	XE0Xz	D2-03100	0
+141000	2	Glaucoma as birth trauma (disorder)	XU7im	D8-71542	1
+142007	0	Excision of tumor from shoulder area, deep, intramuscular (procedure)	XU7kK	P1-16316	1
+143002	1	Retired procedure (procedure)	XURhg	P1-26572	1
+144008	0	Normal peripheral vision (finding)	XU7nB	F-F0041	1
+145009	0	Colloid milium (morphologic abnormality)	M2y22	M-50141	1
+146005	0	Repair of nonunion of metatarsal with bone graft (procedure)	XU7q3	P1-19942	1
+147001	0	Superficial foreign body of scrotum without major open wound but with infection (disorder)	XU7rS	DD-50419	0
+148006	0	Preliminary diagnosis (contextual qualifier) (qualifier value)	XU7sp	G-1003	1
+149003	0	Central pair of microtubules, cilium or flagellum, not bacterial (cell structure)	XU7uK	T-E0470	1
+150003	0	Abnormal bladder continence (finding)	XU7vv	F-72052	1
+151004	0	Gonococcal meningitis (disorder)	F0070	DE-12091	0
+152006	1	Retired procedure (procedure)	XURl5	P1-19906	1
+153001	0	Cystourethroscopy with resection of ureterocele (procedure)	XU80R	P1-73708	0
+154007	0	Rubber molding-press operator (occupation)	XU81m	J-90135	1
+155008	0	Structure of deep circumflex iliac artery (body structure)	XU834	T-46930	1
+156009	0	Spine board, device (physical object)	XU84X	A-12240	1
+157000	4	AIDS with low vision (disorder)	XU85q	DE-36381	1
+158005	0	Salmonella Irumu (organism)	Xa8f8	L-17556	1
+159002	0	Ferrocyanide salt (substance)	XU88f	C-13040	1
+160007	0	Removal of foreign body of tendon and/or tendon sheath (procedure)	XU8AA	P1-103A0	0
+161006	0	Thermal injury (morphologic abnormality)	XU8Bb	M-11000	1
+162004	0	Severe manic bipolar I disorder without psychotic features (disorder)	XU8D1	D9-51230	1
+163009	0	Bacteroides stercoris (organism)	X73VW	L-12453	1
+164003	0	Phosphoenolpyruvate-protein phosphotransferase (substance)	XU8Fp	F-693C0	1
+165002	0	Accident prone (finding)	X760n	F-93018	1
+166001	0	Behavioral therapy (regime/therapy)	Xa8IB	P9-22000	1
+167005	0	Structure of supraclavicular part of brachial plexus (body structure)	XS0Ed	T-A9091	1
+168000	0	Typhlolithiasis (disorder)	XU8LF	D5-44430	1
+169008	0	Hypothalamic releasing factor preparation (product)	XU8Mj	C-A15A0	1
+170009	0	Special potency disk identification, vancomycin test (procedure)	XU8O6	P3-52590	1
+171008	0	Injury of ascending right colon without open wound into abdominal cavity (disorder)	XU8PV	DD-23302	1
+172001	0	Endometritis following molar AND/OR ectopic pregnancy (disorder)	XU8Qm	D8-03011	0
+173006	0	Micrognathus crinitus (organism)	XU8S4	L-C7432	1
+174000	0	Harrison-Richardson operation on vagina (procedure)	XU8TK	P1-82833	1
+175004	0	Supraorbital neuralgia (disorder)	XU8UU	DA-41017	1
+176003	0	Anastomosis of rectum (procedure)	XS7iL	P1-58806	1
+177007	0	Poisoning by sawfly larvae (disorder)	XU8X1	DD-95140	1
+178002	0	Uridine diphosphate galactose (substance)	X80IF	F-65850	1
+179005	0	Apraxia of dressing (finding)	XU8ZO	F-A6980	1
+180008	0	Genus Fijivirus (organism)	XU8am	L-3B900	1
+181007	0	Hemorrhagic bronchopneumonia (disorder)	XU8by	D2-50110	1
+182000	0	Canalization (morphologic abnormality)	XU8d8	M-39250	1
+183005	0	Autoimmune pancytopenia (disorder)	XU8eT	DC-00030	1
+184004	0	Withdrawal arrhythmia (disorder)	XU8fa	D3-31580	1
+185003	1	Retired procedure (procedure)	XURPw	P1-91842	1
+186002	0	Human leukocyte antigen HLA-Cw9 antigen (substance)	XU8i8	F-C4609	1
+187006	0	Cyanocobalamin Co^57^ (substance)	XU8jP	C-B1021	1
+188001	0	Injury of intercostal artery (disorder)	SB1y0	DD-40240	0
+189009	0	Excision of lesion of artery (procedure)	XU8ls	P1-30316	0
+190000	4	Partial hysterectomy (procedure)	XUSSa	P1-83352	1
+191001	0	Lednice virus (organism)	XU8oJ	L-33942	1
+192008	0	Congenital syphilitic hepatomegaly (disorder)	XM1OI	DE-14513	0
+193003	0	Benign hypertensive renal disease (disorder)	G221.	D3-02720	1
+194009	0	Notropis whipplei (organism)	XU8w1	L-C42B4	1
+195005	0	Illegal abortion with endometritis (disorder)	XU8yj	D8-04311	1
+196006	0	Concave shape (qualifier value)	XU91V	M-02040	1
+197002	0	Mold to yeast conversion test (procedure)	XU94H	P3-50770	1
+198007	0	Disease due to Filoviridae (disorder)	XU97D	DE-37000	0
+199004	0	Decreased lactation (finding)	X40Du	F-8A024	1

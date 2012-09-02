@@ -27,6 +27,10 @@ public class SnomedParser {
         put("type", "fulltext");
         put("to_lower_case", "true");
     }};
+    Map<String, String> drugFullIndexConfig = new HashMap<String, String>() {{
+        put("type", "fulltext");
+        put("to_lower_case", "true");
+    }};
 
     BatchInserter inserter = BatchInserters.inserter(STORE_DIR);
     BatchInserterIndexProvider indexProvider = new LuceneBatchInserterIndexProvider(inserter);
@@ -34,11 +38,18 @@ public class SnomedParser {
     BatchInserterIndex nodeTypeIndex = indexProvider.nodeIndex("__types__", configConcept);
 
     BatchInserterIndex conceptIndex = indexProvider.nodeIndex("Concept", configConcept);
+    BatchInserterIndex drugIndex = indexProvider.nodeIndex("Drug", configConcept);
+    BatchInserterIndex drugFullIndex = indexProvider.nodeIndex("DrugFull", drugFullIndexConfig);
+    //BatchInserterIndex conceptFullIndex = indexProvider.nodeIndex("conceptFull", configFull);
+
+    //BatchInserterIndex relationshipIndex = indexProvider.nodeIndex("ConceptRelation", configConcept);
 
     public void finish() {
         nodeTypeIndex.flush();
         //relTypeIndex.flush();
         conceptIndex.flush();
+        drugIndex.flush();
+        drugFullIndex.flush();
         //conceptFullIndex.flush();
         //relationshipIndex.flush();
 
@@ -47,15 +58,15 @@ public class SnomedParser {
     }
 
 
-    private BeanReader getBeanReader(String file, String config) {
-        File conceptsFile = new File("/Users/mwl/IdeaProjects/SnomedCave/data" + file);
+    private BeanReader getBeanReader(String classpathPath, String config) {
+        File file = new File(getClass().getResource(classpathPath).getFile());
         factory.load("/Users/mwl/IdeaProjects/SnomedCave/snomedcavepoc/sc-dbgenerate/src/main/resources/beanio-" + config + ".xml");
-        return factory.createReader(config, conceptsFile);
+        return factory.createReader(config, file);
     }
 
     public void importConcept() {
         long startTime = currentTimeMillis();
-        BeanReader in = getBeanReader("/0/sct_concepts_20120813T134009.txt", "concepts");
+        BeanReader in = getBeanReader("/data/0/sct_concepts_20120813T134009.txt", "concepts");
 
         Object record;
         int count = 0;
@@ -103,7 +114,7 @@ public class SnomedParser {
     }
 
     public void importRelationships() {
-        BeanReader in = getBeanReader("/0/sct_relationships_20120813T134009.txt", "relationships");
+        BeanReader in = getBeanReader("/data/0/sct_relationships_20120813T134009.txt", "relationships");
 
         Object record;
         long startTime = currentTimeMillis();
@@ -141,7 +152,51 @@ public class SnomedParser {
         }
         in.close();
         logger.info("Parsed " + count + " records in " + (currentTimeMillis() - startTime) + " ms");
+    }
 
+    public void importSubtances() {
+        BeanReader in = getBeanReader("/data/ihs_lm_conceptid_dump.txt", "drugs");
+
+        Object record;
+        long startTime = currentTimeMillis();
+        int count = 0;
+        while ((record = in.read()) != null) {
+            if ("header".equals(in.getRecordName())) {
+                //Map<String, Object> header = (Map<String, Object>) record;
+                logger.debug("Parsing header: ignoring");
+            } else if ("drug".equals(in.getRecordName())) {
+                count++;
+
+                final Map<String, Object> drug = (Map<String, Object>) record;
+
+                drug.put("__type__", "dk.sst.snomedcave.model.Drug");
+
+                final long conceptNodeId = getNodeId(drug.get("conceptId"));
+                drug.remove("conceptId");
+
+                final long nodeId = inserter.createNode(drug);
+
+                inserter.createRelationship(nodeId, conceptNodeId, withName("refersTo"), null);
+
+                drugIndex.add(nodeId, new HashMap<String, Object>() {{
+                    put("__type__", "dk.sst.snomedcave.model.Drug");
+                    put("drugId", drug.get("drugId"));
+                }});
+                drugFullIndex.add(nodeId, new HashMap<String, Object>() {{
+                    put("drugName", drug.get("drugName"));
+                    put("substance", drug.get("substance"));
+                }});
+
+                if (count % 1000 == 0) {
+                    logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
+                }
+            }
+            else {
+                logger.warn("unable to parse \"" + record + "\"");
+            }
+        }
+        in.close();
+        logger.info("Parsed " + count + " records in " + (currentTimeMillis() - startTime) + " ms");
     }
 
     private long getNodeId(final Object conceptId) {
