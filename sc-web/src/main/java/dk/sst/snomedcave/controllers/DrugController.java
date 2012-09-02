@@ -9,7 +9,18 @@ import dk.sst.snomedcave.dao.DrugRepository;
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
 import dk.sst.snomedcave.model.Drug;
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.IteratorUtils;
+import org.apache.commons.collections15.Predicate;
 import org.apache.log4j.Logger;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.traversal.Evaluators;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.graphdb.traversal.Traverser;
+import org.neo4j.kernel.Traversal;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 @Controller
 @RequestMapping("/drugs/")
@@ -31,6 +44,9 @@ public class DrugController {
 
     @Inject
     ConceptRepository conceptRepository;
+
+    @Inject
+    Neo4jTemplate neo4jTemplate;
 
     Gson gson = new GsonBuilder().create();
 
@@ -53,17 +69,39 @@ public class DrugController {
     public ResponseEntity<String> tree(@RequestParam("name") String drugName) {
         final List<Drug> drugs = drugRepository.findByDrugNameLike(drugName);
         if (drugs.size() > 1) {
-            logger.warn("Found more than one drug for drugName=" + drugName);
+            logger.warn("Found more than one drug for drugName=" + drugName + ", count=" + drugs.size());
         }
         Concept refersTo = drugs.get(0).getRefersTo();
         Concept concept = null;
-        for (ConceptRelation relation : refersTo.getChilds()) {
-            Concept type = conceptRepository.findOne(relation.getType().getNodeId());
-            if (type.getNodeId() == causativeAgentId()) {
-                concept = conceptRepository.findOne(relation.getChild().getNodeId());
-                break;
+        Concept drugAllergy = conceptRepository.getByConceptId("416098002");
+        Node drugAllergyNode = neo4jTemplate.getNode(drugAllergy.getNodeId());
+        final TraversalDescription td = Traversal.description().depthFirst().relationships(withName("childs"), Direction.INCOMING).relationships(withName("child"), Direction.INCOMING).evaluator(Evaluators.returnWhereEndNodeIs(drugAllergyNode));
+
+        List<ConceptRelation> causativesDrugAllergy = new ArrayList<ConceptRelation>(CollectionUtils.select(refersTo.getChilds(), new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                if (conceptRepository.findOne(relation.getType().getNodeId()).getNodeId().equals(causativeAgentId())) {
+                    Node childNode = neo4jTemplate.getNode(relation.getChild().getNodeId());
+
+                    Traverser paths = td.traverse(childNode);
+                    List<Path> pathList = IteratorUtils.toList(paths.iterator());
+                    if (pathList.size() > 0) {
+                        logger.info("found " + pathList.size() + " paths to Drug Allergy");
+                    }
+                    return pathList.size() > 0;
+                }
+                return false;
+            }
+        }));
+        if (causativesDrugAllergy.size() > 1) {
+            logger.warn("Found more than one causative agent");
+            for (ConceptRelation conceptRelation : causativesDrugAllergy) {
+                Concept child = conceptRepository.findOne(conceptRelation.getChild().getNodeId());
+                logger.warn("conceptId=" + child.getConceptId() + ", name=" + child.getFullyspecifiedName());
             }
         }
+
+        concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.put("location", singletonList("/concepts/tree?id=" + concept.getConceptId()));
