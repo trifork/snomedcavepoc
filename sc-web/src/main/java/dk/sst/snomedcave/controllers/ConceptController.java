@@ -99,6 +99,10 @@ public class ConceptController {
 
     public TreeResponse conceptTree(String conceptId) {
         Concept target = conceptRepository.getByConceptId(conceptId);
+        if (target == null) {
+            logger.debug("Did not find any concepts with conceptId=" + conceptId);
+            return null;
+        }
         List<Concept> levels = getThreeLevelsUpFrom(target);
         reverse(levels);
         ConceptNode root = new ConceptNode(

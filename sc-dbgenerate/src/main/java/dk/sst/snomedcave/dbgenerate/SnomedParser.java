@@ -14,6 +14,8 @@ import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
+    public static final String STORE_DIR = System.getProperty("user.home") + "/.sc-poc/data.db";
+
     StreamFactory factory = StreamFactory.newInstance();
 
     Map<String, Long> conceptIds = new HashMap<String, Long>();
@@ -26,16 +28,12 @@ public class SnomedParser {
         put("to_lower_case", "true");
     }};
 
-    BatchInserter inserter = BatchInserters.inserter("target/data-insert.db");
+    BatchInserter inserter = BatchInserters.inserter(STORE_DIR);
     BatchInserterIndexProvider indexProvider = new LuceneBatchInserterIndexProvider(inserter);
 
     BatchInserterIndex nodeTypeIndex = indexProvider.nodeIndex("__types__", configConcept);
-    //BatchInserterIndex relTypeIndex = indexProvider.nodeIndex("__rel-types__", configConcept);
 
     BatchInserterIndex conceptIndex = indexProvider.nodeIndex("Concept", configConcept);
-    //BatchInserterIndex conceptFullIndex = indexProvider.nodeIndex("conceptFull", configFull);
-
-    //BatchInserterIndex relationshipIndex = indexProvider.nodeIndex("ConceptRelation", configConcept);
 
     public void finish() {
         nodeTypeIndex.flush();
