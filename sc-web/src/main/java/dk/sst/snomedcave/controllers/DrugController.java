@@ -1,8 +1,13 @@
 package dk.sst.snomedcave.controllers;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.dao.DrugRepository;
+import dk.sst.snomedcave.model.Concept;
+import dk.sst.snomedcave.model.ConceptRelation;
 import dk.sst.snomedcave.model.Drug;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -29,6 +33,8 @@ public class DrugController {
     ConceptRepository conceptRepository;
 
     Gson gson = new GsonBuilder().create();
+
+    private static Concept causativeAgentAttribute;
 
     @RequestMapping(value = "search", produces = "application/json")
     public ResponseEntity<String> search(@RequestParam("q") String drugQuery) {
@@ -49,8 +55,25 @@ public class DrugController {
         if (drugs.size() > 1) {
             logger.warn("Found more than one drug for drugName=" + drugName);
         }
-        return new ResponseEntity<String>(new HttpHeaders() {{
-            put("location", singletonList("/concepts/tree?id=" + drugs.get(0).getRefersTo().getConceptId()));
-        }}, HttpStatus.MOVED_TEMPORARILY);
+        Concept refersTo = drugs.get(0).getRefersTo();
+        Concept concept = null;
+        for (ConceptRelation relation : refersTo.getChilds()) {
+            Concept type = conceptRepository.findOne(relation.getType().getNodeId());
+            if (type.getNodeId() == causativeAgentId()) {
+                concept = conceptRepository.findOne(relation.getChild().getNodeId());
+                break;
+            }
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.put("location", singletonList("/concepts/tree?id=" + concept.getConceptId()));
+        return new ResponseEntity<String>(headers, HttpStatus.MOVED_TEMPORARILY);
+    }
+
+    private long causativeAgentId() {
+        if (causativeAgentAttribute == null) {
+            causativeAgentAttribute = conceptRepository.getByConceptId("246075003");
+        }
+        return causativeAgentAttribute.getNodeId();
     }
 }

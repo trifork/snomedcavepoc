@@ -2,7 +2,7 @@
 var module = angular.module('myApp', []);
 
 var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;{{concept.name}}</span>" +
-    "<ul>" +
+    "<ul class='unstyled' style='padding-left: 20px;'>" +
         "<li ng-repeat=\"child in concept.childs\">" +
             "<span concept=\"child\"></span>" +
         "</li>" +
