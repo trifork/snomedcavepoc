@@ -29,6 +29,11 @@ public class Initiator {
             snomedParser.importRelationships();
         }
 
+        if (!ArrayUtils.contains(args, "--skip-drugs")) {
+            System.out.println("Will import drugs");
+            snomedParser.importSubtances();
+        }
+
         snomedParser.finish();
     }
 }
