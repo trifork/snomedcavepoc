@@ -17,9 +17,9 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
     }
 
     $scope.findConcept = function () {
-        var conceptName = $scope.conceptName;
-        $log.info("Will lookup " + conceptName)
-        $http.get("/concepts/tree?id=" + conceptName).success(function(data, status) {
+        var drugQuery = $scope.drugQuery;
+        $log.info("Will lookup " + drugQuery)
+        $http.get("/drugs/concepttree?name=" + drugQuery).success(function(data, status) {
             $scope.concept = data
         })
     }
@@ -78,23 +78,15 @@ module.directive("concept", function($compile, $http) {
     };
 });
 
-module.directive('typeahead', function() {
+module.directive('typeahead', function($http) {
     return {
         require: 'ngModel',
         link: function(scope, elm, attr, ngModel) {
             $(elm).typeahead({
                     source: function(query, process) {
-                        process([
-                            "Allergi over for lægemidler",
-                            "Allergier over for billige lægemidler",
-                            "Allergier over for ampicillin",
-                            "Allergier over for amoxecillin",
-                            "Allergier over for hvide lægemidler",
-                            "Allergier over for Panodil",
-                            "Allergier over for placebo",
-                            "Penicillin overdose (disorder)",
-                            "Allergy to penicillin (disorder)"
-                        ])
+                        $http.get("/drugs/search?q=" + scope.drugQuery).success(function(data, status) {
+                            process(data)
+                        })
                     },
                     updater: function(item) {
                         scope.$apply(function() {
