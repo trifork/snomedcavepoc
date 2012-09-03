@@ -8,7 +8,6 @@ public class ConceptRelation extends NodeObject {
     private String relationId;
     private Concept type;
 
-    @Fetch
     private Concept child;
 
     public ConceptRelation() {
