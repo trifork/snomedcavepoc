@@ -20,8 +20,9 @@ public class Concept extends NodeObject {
 
     int status;
 
-    @Indexed
     String fullyspecifiedName;
+
+    String term;
 
     String ctv3Id;
 
@@ -76,6 +77,14 @@ public class Concept extends NodeObject {
 
     public void setFullyspecifiedName(String fullyspecifiedName) {
         this.fullyspecifiedName = fullyspecifiedName;
+    }
+
+    public String getTerm() {
+        return term != null && term.length() > 0 ? term : fullyspecifiedName;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
     }
 
     public String getCtv3Id() {
