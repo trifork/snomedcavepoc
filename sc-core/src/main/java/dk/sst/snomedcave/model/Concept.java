@@ -80,7 +80,7 @@ public class Concept extends NodeObject {
     }
 
     public String getTerm() {
-        return term;
+        return term != null && term.length() > 0 ? term : fullyspecifiedName;
     }
 
     public void setTerm(String term) {
