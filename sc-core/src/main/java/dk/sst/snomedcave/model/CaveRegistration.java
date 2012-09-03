@@ -1,9 +1,11 @@
 package dk.sst.snomedcave.model;
 
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 
 @NodeEntity
 public class CaveRegistration extends NodeObject {
+    @Fetch
     private Concept allergy;
 
     private String reaction;

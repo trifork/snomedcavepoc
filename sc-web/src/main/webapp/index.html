@@ -17,7 +17,7 @@
             </form>
         </div>
     </div>
-    <div id="identityResult" class="row" style="display: none;">
+    <div id="identity" class="row" style="display: none;">
         <div class="span12">
             <table class="table table-hover">
                 <thead>
@@ -28,24 +28,18 @@
                     <th>Reaktionshyppighed</th>
                     <th>Omr&aring;de</th>
                     <th>Advarsel</th>
+                    <th>...</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="error" ng-click="selectRegistration(1)">
-                    <td>Panodil</td>
-                    <td>Reaktion 1</td>
-                    <td>Meget</td>
-                    <td>Ved fuldm&aring;ne</td>
-                    <td>Stort&aring;sneglen</td>
-                    <td>JA</td>
-                </tr>
-                <tr ng-click="selectRegistration(2)">
-                    <td>Allergi 2</td>
-                    <td>Reaktion 2</td>
-                    <td>Lidt</td>
-                    <td>Dagligt</td>
-                    <td>Venstre albue</td>
-                    <td>NEJ</td>
+                <tr ng-repeat="registration in identity.caveRegistrations">
+                    <td>{{registration.allergy.term}}</td>
+                    <td>{{registration.reaction}}</td>
+                    <td>{{registration.grade}}</td>
+                    <td>{{registration.reactionFrequency}}</td>
+                    <td>{{registration.area}}</td>
+                    <td>{{registration.warning}}</td>
+                    <td><a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a></td>
                 </tr>
                 </tbody>
 
@@ -62,9 +56,16 @@
             <div concept="concept" ng-show="concept"></div>
         </div>
         <div class="span3">
-            <div class="well well-small">Boks 1</div>
-            <div class="well well-small">Boks 2</div>
-            <div class="well well-small">Boks 3</div>
+            <div class="well well-small">{{selectedRegistration.reaction}}</div>
+            <div class="well well-small">{{selectedRegistration.grade}}</div>
+            <div class="well well-small">{{selectedRegistration.reactionFrequency}}</div>
+            <div class="well well-small">{{selectedRegistration.area}}</div>
+            <div class="well well-small">
+                <label class="checkbox">
+                    <input type="checkbox" ng-model="selectedRegistration.warning"/>
+                    Advarsel
+                </label>
+            </div>
         </div>
     </div>
 

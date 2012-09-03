@@ -10,10 +10,13 @@ var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasCh
 
 module.controller("IdentityCtrl", function($scope, $log, $http) {
     $scope.findIdentity = function() {
-        $scope.identityResult = $scope.identityCpr
+        $http.get("/identities/" + $scope.identityCpr).success(function(data, status) {
+            $scope.identity = data;
+        })
     }
-    $scope.selectRegistration = function(number) {
-        $scope.selectedRegistration = number
+    $scope.selectRegistration = function(registration) {
+        $log.info("Selecting registration=" + registration.nodeId)
+        $scope.selectedRegistration = registration
     }
 
     $scope.findConcept = function () {
@@ -23,20 +26,21 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
             $scope.concept = data
         })
     }
-    $scope.$watch("identityResult", function(newValue, oldValue) {
+    $scope.$watch("identity", function(newValue, oldValue) {
         $scope.selectedRegistration = undefined
         if (newValue) {
-            $("#identityResult").slideUp()
-            $("#identityResult").slideDown()
+            $("#identity").slideUp()
+            $("#identity").slideDown()
         }
         else {
-            $("#identityResult").slideUp()
+            $("#identity").slideUp()
         }
     })
     $scope.$watch("selectedRegistration", function(newValue, oldValue) {
         if (newValue) {
-            $("#conceptBrowser").slideUp()
+            $("#conceptBrowser").hide()
             $("#conceptBrowser").slideDown()
+
         }
         else {
             $("#conceptBrowser").slideUp()
