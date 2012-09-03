@@ -1,8 +1,11 @@
 package dk.sst.snomedcave.service;
 
 import dk.sst.snomedcave.dao.ConceptRepository;
+import dk.sst.snomedcave.dao.IdentityRepository;
+import dk.sst.snomedcave.model.CaveRegistration;
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
+import dk.sst.snomedcave.model.Identity;
 import org.apache.log4j.Logger;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,19 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import java.util.HashSet;
+
+import static java.util.Arrays.asList;
+
 public class ContextChecker implements ApplicationListener<ApplicationContextEvent> {
     private static final Logger logger = Logger.getLogger(ContextChecker.class);
 
     @Autowired
     ConceptRepository conceptRepository;
+
+    @Inject
+    IdentityRepository identityRepository;
 
     @Autowired
     Neo4jTemplate neo4jTemplate;
@@ -25,25 +36,33 @@ public class ContextChecker implements ApplicationListener<ApplicationContextEve
     public void onApplicationEvent(ApplicationContextEvent event) {
         logger.info("Using neo4j store: " + ((EmbeddedGraphDatabase) neo4jTemplate.getGraphDatabaseService()).getStoreDir());
         if (event instanceof ContextRefreshedEvent) {
-            if (conceptRepository.getByConceptId("1001") == null) {
-                logger.info("Will bootstrap application with Concepts");
-                Concept rootConcept = new Concept(
-                        "1001",
-                        "Allergi over for lægemidler",
-                        new ConceptRelation(null, new Concept("1002", "Allergier over for billige lægemidler",
-                                new ConceptRelation(null, new Concept("1003", "Allergier over for ampicillin")),
-                                new ConceptRelation(null, new Concept("1004", "Allergier over for amoxecillin"))
-                        )),
-                        new ConceptRelation(null, new Concept("1005", "Allergier over for hvide lægemidler",
-                                new ConceptRelation(null, new Concept("1006", "Allergier over for Panodil"))
-                        )),
-                        new ConceptRelation(null, new Concept("1004", "Allergier over for placebo"))
+            if (identityRepository.count() == 0) {
+                identityRepository.save(
+                        new Identity(
+                                "1010101010",
+                                "John doe",
+                                new HashSet<CaveRegistration>(asList(
+                                        new CaveRegistration(
+                                                conceptRepository.getByConceptId("293610009"),
+                                                "Blue hair",
+                                                "A lot",
+                                                "Monthly",
+                                                "Head",
+                                                true
+                                        ),
+                                        new CaveRegistration(
+                                                conceptRepository.getByConceptId("295067003"),
+                                                "Big elbows",
+                                                "A lot",
+                                                "weekly",
+                                                "Arm",
+                                                false
+                                        )
+                                ))
+                        )
                 );
-
-                conceptRepository.save(rootConcept);
             }
         }
-
     }
 
     @Transactional
