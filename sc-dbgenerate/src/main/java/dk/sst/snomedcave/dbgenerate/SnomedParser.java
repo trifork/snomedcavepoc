@@ -19,6 +19,7 @@ public class SnomedParser {
     StreamFactory factory = StreamFactory.newInstance();
 
     Map<String, Long> conceptIds = new HashMap<String, Long>();
+    Map<String, String> conceptTerms = new HashMap<String, String>();
 
     Map<String, String> configConcept = new HashMap<String, String>() {{
         put("type", "exact");
@@ -64,7 +65,29 @@ public class SnomedParser {
         return factory.createReader(config, file);
     }
 
+    private void readTerms() {
+        BeanReader in = getBeanReader("/data/20120828_SNOMEDCT_subset_med_allergier.csv", "terms");
+
+        Object record;
+        while ((record = in.read()) != null) {
+            if ("header".equals(in.getRecordName())) {
+                //Map<String, Object> header = (Map<String, Object>) record;
+                logger.debug("Parsing header: ignoring");
+            }
+            else if ("term".equals(in.getRecordName())) {
+                final Map<String, Object> term = (Map<String, Object>) record;
+
+                conceptTerms.put((String) term.get("conceptId"), (String) term.get("term"));
+            }
+            else {
+                logger.warn("unable to parse \"" + record + "\"");
+            }
+
+        }
+    }
+
     public void importConcept() {
+        readTerms();
         long startTime = currentTimeMillis();
         BeanReader in = getBeanReader("/data/0/sct_concepts_20120813T134009.txt", "concepts");
 
@@ -95,13 +118,13 @@ public class SnomedParser {
 
     private long saveConcept(final Map<String, Object> concept) {
         concept.put("__type__", "dk.sst.snomedcave.model.Concept");
-        final long nodeId = inserter.createNode(concept);
         final String conceptId = (String) concept.get("conceptId");
+        concept.put("term", conceptTerms.containsKey(conceptId) ? conceptTerms.get(conceptId) : "");
+        final long nodeId = inserter.createNode(concept);
         conceptIds.put(conceptId, nodeId);
         conceptIndex.add(nodeId, new HashMap<String, Object>() {{
             put("__type__", "dk.sst.snomedcave.model.Concept");
             put("conceptId", conceptId);
-            put("fullyspecifiedName", concept.get("fullyspecifiedName"));
         }});
         //conceptFullIndex.add(nodeId, new HashMap<String, Object>() {{
         //}});

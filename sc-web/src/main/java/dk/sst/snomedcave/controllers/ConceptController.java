@@ -80,12 +80,12 @@ public class ConceptController {
         return new ResponseEntity<String>(gson.toJson(
                 new ConceptNode(
                         concept.getConceptId(),
-                        concept.getFullyspecifiedName(),
+                        concept.getTerm(),
                         collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
                             @Override
                             public ConceptNode transform(ConceptRelation relation) {
                                 Concept child = get(get(relation).getChild());
-                                return new ConceptNode(child.getConceptId(), child.getFullyspecifiedName(), child.getChilds().size() > 0);
+                                return new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0);
                             }
                         })))
                 , HttpStatus.OK);
@@ -107,12 +107,12 @@ public class ConceptController {
         reverse(levels);
         ConceptNode root = new ConceptNode(
                 target.getConceptId(),
-                target.getFullyspecifiedName(),
+                target.getTerm(),
                 collect(target.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
                     @Override
                     public ConceptNode transform(ConceptRelation relation) {
                         final Concept concept = get(get(relation).getChild());
-                        return new ConceptNode(concept.getConceptId(), concept.getFullyspecifiedName(), concept.getChilds().size() > 0);
+                        return new ConceptNode(concept.getConceptId(), concept.getTerm(), concept.getChilds().size() > 0);
                     }
                 }));
 
@@ -122,12 +122,12 @@ public class ConceptController {
                 break;
             }
             Concept concept = levels.get(i);
-            root = new ConceptNode(concept.getConceptId(), concept.getFullyspecifiedName(), root);
+            root = new ConceptNode(concept.getConceptId(), concept.getTerm(), root);
             if (i == 1) { //First parent
                 for (ConceptRelation relation : concept.getChilds()) {
                     Concept child = get(get(relation).getChild());
                     if (!child.getConceptId().equals(root.conceptId)) {
-                        root.childs.add(new ConceptNode(child.getConceptId(), child.getFullyspecifiedName(), child.getChilds().size() > 0));
+                        root.childs.add(new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0));
                     }
                 }
             }

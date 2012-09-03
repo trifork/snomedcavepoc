@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beanio xmlns="http://www.beanio.org/2012/03">
+    <!--
+Begrebs ID;Fuldt specificerende term;Foretrukken term ID;Foretrukken term;;
+416098002;Drug allergy (disorder);4743381000005110;allergi over for l�gemiddel;;
+293959006;Alcohol metabolism modifier allergy (disorder);3844511000005110;allergi over for alkoholstofskiftemodifikator;;
+294420000;Alcohol products allergy (disorder);3951121000005110;allergi over for alkoholprodukter;;
+
+
+    -->
+    <stream name="terms" format="delimited">
+        <parser>
+            <property name="delimiter" value=";"/>
+        </parser>
+        <!-- 'class' binds the header record to a java.util.HashMap -->
+        <record name="header" class="map">
+            <field name="ConceptId" literal="Begrebs ID" rid="true"/>
+            <field name="FullySpecifiedName" literal="Fuldt specificerende term" rid="true"/>
+            <field name="TermId" literal="Foretrukken term ID" rid="true"/>
+            <field name="Term" literal="Foretrukken term" rid="true"/>
+        </record>
+
+        <record name="term" class="map">
+            <field name="conceptId"/>
+            <field name="fullyspecifiedName"/>
+            <field name="termId"/>
+            <field name="term"/>
+        </record>
+    </stream>
+</beanio>
