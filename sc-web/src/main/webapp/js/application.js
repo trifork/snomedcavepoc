@@ -1,7 +1,7 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;{{concept.name}}</span>" +
+var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;<span ng-click='selectConcept(concept)'>{{concept.name}}</span></span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
         "<li ng-repeat=\"child in concept.childs\">" +
             "<span concept=\"child\"></span>" +
@@ -27,18 +27,6 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         prompt("Do you really want to delete " + registration.nodeId + "?")
     }
 
-    $scope.findConcept = function () {
-        var drugQuery = $scope.drugQuery;
-        $log.info("Will lookup " + drugQuery)
-        $http.get("/drugs/concepttree?name=" + drugQuery).success(function(drug, status) {
-            $scope.getConcept(drug.allergyId)
-        })
-    }
-    $scope.getConcept = function(allergyId) {
-        $http.get("/concepts/tree?id=" + allergyId).success(function(data, status) {
-            $scope.concept = data
-        })
-    }
     $scope.$watch("identity", function(newValue, oldValue) {
         $scope.selectedRegistration = undefined
         if (newValue) {
@@ -52,7 +40,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.$watch("selectedRegistration", function(newValue, oldValue) {
         if (newValue) {
             $("#conceptBrowser").hide()
-            $scope.getConcept(newValue.allergyId)
+            $scope.selectedRegistration = newValue
             $("#conceptBrowser").slideDown()
 
         }
@@ -60,6 +48,40 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
             $("#conceptBrowser").slideUp()
         }
     })
+})
+
+module.directive("caveRegistration", function($http) {
+    return function(scope, element, attrs) {
+        var registration;
+
+        scope.$watch(attrs.caveRegistration, function(value) {
+            registration = value;
+            update()
+        })
+
+        function update() {
+            scope.registration = registration
+            if (registration) {
+                getConcept(registration.allergyId)
+            }
+            else {
+                //TODO: hide something?
+            }
+        }
+
+        function findDrug(query) {
+            $log.info("Will lookup " + query)
+            $http.get("/drugs/concepttree?name=" + query).success(function(drug, status) {
+                getConcept(drug.allergyId)
+            })
+        }
+
+        function getConcept(allergyId) {
+            $http.get("/concepts/tree?id=" + allergyId).success(function(data, status) {
+                scope.allergyTree = data
+            })
+        }
+    }
 })
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
@@ -82,6 +104,9 @@ module.directive("concept", function($compile, $http) {
             else {
                 return "plus"
             }
+        }
+        $scope.selectConcept = function(concept) {
+            alert("Selected " + concept.name)
         }
     }
 
