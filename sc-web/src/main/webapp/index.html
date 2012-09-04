@@ -9,7 +9,7 @@
     <title>Hello world</title>
 </head>
 <body>
-<div class="container" ng-controller="IdentityCtrl">
+<div class="container-fluid" ng-controller="IdentityCtrl">
     <div class="navbar">
         <div class="navbar-inner">
             <form class="navbar-search pull-left" ng-submit="findIdentity()">
@@ -17,7 +17,7 @@
             </form>
         </div>
     </div>
-    <div id="identity" class="row" style="display: none;">
+    <div id="identity" class="row-fluid" style="display: none;">
         <div class="span12">
             <table class="table table-hover">
                 <thead>
@@ -49,14 +49,16 @@
             </table>
         </div>
     </div>
-    <div id="conceptBrowser" class="row" style="display: none;">
+    <div class="row-fluid" id="conceptBrowser" style="display: none;">
         <div class="span8">
-            <form class="well form-search" ng-submit="findConcept()">
-                <input type="text" ng-model="drugQuery" placeholder="Find drug" class="input-medium search-query"
-                       typeahead/>
-                <input class="btn" type="submit" value="Search"/>
+            <div class="well">
+                <div class="span12 input-append">
+                    <input type="text" ng-model="drugQuery" placeholder="Find drug" typeahead/>
+                    <button class="btn" ng-click="findConcept()">Search</button>
+                </div>
+
                 <div concept="concept" ng-show="concept"></div>
-            </form>
+            </div>
         </div>
         <div class="span4 pull-right">
             <div class="well well-small">
@@ -83,8 +85,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 </body>
 </html>

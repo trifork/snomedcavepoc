@@ -8,9 +8,10 @@ var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasCh
         "</li>" +
     "</ul>"
 
-module.controller("IdentityCtrl", function($scope, $log, $http) {
+module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.findIdentity = function() {
         $http.get("/identities/" + $scope.identityCpr).success(function(data, status) {
+            //$location.path("/identities/" + $scope.identityCpr)
             $scope.identity = data;
         })
     }
