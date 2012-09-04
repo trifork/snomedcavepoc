@@ -193,6 +193,9 @@ public class SnomedParser {
                 final Map<String, Object> drug = (Map<String, Object>) record;
 
                 drug.put("__type__", "dk.sst.snomedcave.model.Drug");
+                drug.put("name", String.format("%s (%s)", drug.get("drugName"), drug.get("substance")));
+                drug.remove("drugName");
+                drug.remove("substance");
 
                 final long conceptNodeId = getNodeId(drug.get("conceptId"));
                 drug.remove("conceptId");
@@ -206,8 +209,7 @@ public class SnomedParser {
                     put("drugId", drug.get("drugId"));
                 }});
                 drugFullIndex.add(nodeId, new HashMap<String, Object>() {{
-                    put("drugName", drug.get("drugName"));
-                    put("substance", drug.get("substance"));
+                    put("name", drug.get("name"));
                 }});
 
                 if (count % 1000 == 0) {

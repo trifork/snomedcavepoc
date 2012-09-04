@@ -55,7 +55,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     })
 })
 
-module.directive("caveRegistration", function($http) {
+module.directive("caveRegistration", function($http, $log) {
     return function(scope, element, attrs) {
         var registration;
 
@@ -74,7 +74,7 @@ module.directive("caveRegistration", function($http) {
             }
         }
 
-        function findDrug(query) {
+        scope.findDrug = function(query) {
             $log.info("Will lookup " + query)
             $http.get("/drugs/concepttree?name=" + query).success(function(drug, status) {
                 getConcept(drug.allergyId)
