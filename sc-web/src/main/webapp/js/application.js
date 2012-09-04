@@ -26,6 +26,11 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.deleteRegistration = function(registration) {
         prompt("Do you really want to delete " + registration.nodeId + "?")
     }
+    $scope.addRegistration = function() {
+        var registration = {};
+        $scope.identity.caveRegistrations.push(registration)
+        $scope.selectedRegistration = registration
+    }
 
     $scope.$watch("identity", function(newValue, oldValue) {
         $scope.selectedRegistration = undefined
