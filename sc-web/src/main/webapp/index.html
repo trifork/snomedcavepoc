@@ -39,7 +39,10 @@
                     <td>{{registration.reactionFrequency}}</td>
                     <td>{{registration.area}}</td>
                     <td>{{registration.warning}}</td>
-                    <td><a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a></td>
+                    <td>
+                        <a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a>
+                        <a ng-click="deleteRegistration(registration)"><i class="icon-trash"></i></a>
+                    </td>
                 </tr>
                 </tbody>
 
@@ -47,19 +50,31 @@
         </div>
     </div>
     <div id="conceptBrowser" class="row" style="display: none;">
-        <div class="span9">
+        <div class="span8">
             <form class="well form-search" ng-submit="findConcept()">
-                <input type="text" ng-model="drugQuery" placeholder="Find drug" class="input-medium search-query" typeahead/>
+                <input type="text" ng-model="drugQuery" placeholder="Find drug" class="input-medium search-query"
+                       typeahead/>
                 <input class="btn" type="submit" value="Search"/>
+                <div concept="concept" ng-show="concept"></div>
             </form>
-
-            <div concept="concept" ng-show="concept"></div>
         </div>
-        <div class="span3">
-            <div class="well well-small">{{selectedRegistration.reaction}}</div>
-            <div class="well well-small">{{selectedRegistration.grade}}</div>
-            <div class="well well-small">{{selectedRegistration.reactionFrequency}}</div>
-            <div class="well well-small">{{selectedRegistration.area}}</div>
+        <div class="span4 pull-right">
+            <div class="well well-small">
+                <label for="reaction">Reaktion</label>
+                <input id="reaction" type="text" ng-model="selectedRegistration.reaction">
+            </div>
+            <div class="well well-small">
+                <label for="grade">Alvorlighedsgrad</label>
+                <input id="grade" type="text" ng-model="selectedRegistration.grade">
+            </div>
+            <div class="well well-small">
+                <label for="reactionFrequency">Reaktionshyppighed</label>
+                <input id="reactionFrequency" type="text" ng-model="selectedRegistration.reactionFrequency">
+            </div>
+            <div class="well well-small">
+                <label for="area">Omr&aring;de</label>
+                <input id="area" placeholder="" type="text" ng-model="selectedRegistration.area">
+            </div>
             <div class="well well-small">
                 <label class="checkbox">
                     <input type="checkbox" ng-model="selectedRegistration.warning"/>

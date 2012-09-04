@@ -18,6 +18,9 @@ module.controller("IdentityCtrl", function($scope, $log, $http) {
         $log.info("Selecting registration=" + registration.nodeId)
         $scope.selectedRegistration = registration
     }
+    $scope.deleteRegistration = function(registration) {
+        prompt("Do you really want to delete " + registration.nodeId + "?")
+    }
 
     $scope.findConcept = function () {
         var drugQuery = $scope.drugQuery;
