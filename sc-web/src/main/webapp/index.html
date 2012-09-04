@@ -17,28 +17,32 @@
             </form>
         </div>
     </div>
+    <div class="alert fade in" ng-init="dirty=false" ng-show="dirty">
+        <p>Er ikke gemt</p>
+        <p><a class="btn">Gem nu</a></p>
+    </div>
     <div id="identity" class="row-fluid" style="display: none;">
         <div class="span12">
             <table class="table table-hover">
                 <thead>
                 <tr>
+                    <th><i class="icon-warning-sign"></i></th>
                     <th>Allergi</th>
                     <th>Reaktion</th>
                     <th>Alvorlighedsgrad</th>
                     <th>Reaktionshyppighed</th>
                     <th>Omr&aring;de</th>
-                    <th>Advarsel</th>
                     <th>...</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="registration in identity.caveRegistrations">
-                    <td>{{registration.allergy.term}}</td>
+                    <td><i class="icon-warning-sign" ng-show="registration.warning"></i></td>
+                    <td>{{registration.allergyTerm}}</td>
                     <td>{{registration.reaction}}</td>
                     <td>{{registration.grade}}</td>
                     <td>{{registration.reactionFrequency}}</td>
                     <td>{{registration.area}}</td>
-                    <td>{{registration.warning}}</td>
                     <td>
                         <a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a>
                         <a ng-click="deleteRegistration(registration)"><i class="icon-trash"></i></a>

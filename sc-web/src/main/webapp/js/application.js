@@ -15,6 +15,10 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
             $scope.identity = data;
         })
     }
+    $scope.saveIdentity = function() {
+        alert("Should save...")
+    }
+
     $scope.selectRegistration = function(registration) {
         $log.info("Selecting registration=" + registration.nodeId)
         $scope.selectedRegistration = registration
@@ -26,7 +30,12 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.findConcept = function () {
         var drugQuery = $scope.drugQuery;
         $log.info("Will lookup " + drugQuery)
-        $http.get("/drugs/concepttree?name=" + drugQuery).success(function(data, status) {
+        $http.get("/drugs/concepttree?name=" + drugQuery).success(function(drug, status) {
+            $scope.getConcept(drug.allergyId)
+        })
+    }
+    $scope.getConcept = function(allergyId) {
+        $http.get("/concepts/tree?id=" + allergyId).success(function(data, status) {
             $scope.concept = data
         })
     }
@@ -43,6 +52,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.$watch("selectedRegistration", function(newValue, oldValue) {
         if (newValue) {
             $("#conceptBrowser").hide()
+            $scope.getConcept(newValue.allergyId)
             $("#conceptBrowser").slideDown()
 
         }

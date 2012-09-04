@@ -1,9 +1,6 @@
 package dk.sst.snomedcave.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.dao.DrugRepository;
 import dk.sst.snomedcave.model.Concept;
@@ -103,9 +100,9 @@ public class DrugController {
 
         concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("location", singletonList("/concepts/tree?id=" + concept.getConceptId()));
-        return new ResponseEntity<String>(headers, HttpStatus.MOVED_TEMPORARILY);
+        JsonObject response = new JsonObject();
+        response.addProperty("allergyId", concept.getConceptId());
+        return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
     }
 
     private long causativeAgentId() {
