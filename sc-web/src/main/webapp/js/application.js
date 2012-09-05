@@ -55,6 +55,19 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     })
 })
 
+module.directive("tooltip", function() {
+    return function(scope, element, attrs) {
+        scope.$watch(
+            function() {return attrs.tooltip},
+            function(newValue) {
+                element.tooltip({
+                    title: newValue,
+                    placement: "left"
+                })
+            })
+    }
+})
+
 module.directive("caveRegistration", function($http, $log) {
     return function(scope, element, attrs) {
         var registration;

@@ -6,6 +6,7 @@
     <script type="text/javascript" src="js/angular-1.0.1.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/underscore-min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/application.js" charset="utf-8"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <title>Hello world</title>
 </head>
@@ -47,8 +48,8 @@
                         <td>{{registration.reactionFrequency}}</td>
                         <td>{{registration.area}}</td>
                         <td>
-                            <a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a>
-                            <a ng-click="deleteRegistration(registration)"><i class="icon-trash"></i></a>
+                            <a ng-click="selectRegistration(registration)" tooltip="Rediger registrering"><i class="icon-edit"></i></a>
+                            <a ng-click="deleteRegistration(registration)" tooltip="Slet registrering"><i class="icon-trash"></i></a>
                         </td>
                     </tr>
                     </tbody>
