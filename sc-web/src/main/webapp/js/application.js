@@ -24,7 +24,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         $scope.selectedRegistration = registration
     }
     $scope.deleteRegistration = function(registration) {
-        $scope.identity.caveRegistrations.pop(registration)
+        $scope.identity.caveRegistrations = _.without($scope.identity.caveRegistrations, registration)
     }
     $scope.addRegistration = function() {
         var registration = {};
