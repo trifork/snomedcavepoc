@@ -24,7 +24,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         $scope.selectedRegistration = registration
     }
     $scope.deleteRegistration = function(registration) {
-        prompt("Do you really want to delete " + registration.nodeId + "?")
+        $scope.identity.caveRegistrations.pop(registration)
     }
     $scope.addRegistration = function() {
         var registration = {};
@@ -82,6 +82,7 @@ module.directive("caveRegistration", function($http, $log) {
         }
 
         function getConcept(allergyId) {
+            selectedConceptId = allergyId
             $http.get("/concepts/tree?id=" + allergyId).success(function(data, status) {
                 scope.allergyTree = data
             })
