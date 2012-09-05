@@ -9,7 +9,7 @@
     <title>Hello world</title>
 </head>
 <body>
-<div class="container" ng-controller="IdentityCtrl">
+<div class="container-fluid" ng-controller="IdentityCtrl">
     <div class="navbar">
         <div class="navbar-inner">
             <form class="navbar-search pull-left" ng-submit="findIdentity()">
@@ -17,58 +17,78 @@
             </form>
         </div>
     </div>
-    <div id="identityResult" class="row" style="display: none;">
-        <div class="span12">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Allergi</th>
-                    <th>Reaktion</th>
-                    <th>Alvorlighedsgrad</th>
-                    <th>Reaktionshyppighed</th>
-                    <th>Omr&aring;de</th>
-                    <th>Advarsel</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="error" ng-click="selectRegistration(1)">
-                    <td>Panodil</td>
-                    <td>Reaktion 1</td>
-                    <td>Meget</td>
-                    <td>Ved fuldm&aring;ne</td>
-                    <td>Stort&aring;sneglen</td>
-                    <td>JA</td>
-                </tr>
-                <tr ng-click="selectRegistration(2)">
-                    <td>Allergi 2</td>
-                    <td>Reaktion 2</td>
-                    <td>Lidt</td>
-                    <td>Dagligt</td>
-                    <td>Venstre albue</td>
-                    <td>NEJ</td>
-                </tr>
-                </tbody>
+    <div class="alert fade in" ng-init="dirty=false" ng-show="dirty">
+        <p>Er ikke gemt</p>
 
-            </table>
+        <p><a class="btn">Gem nu</a></p>
+    </div>
+    <div id="identity" style="display: none;">
+        <div class="row-fluid">
+            <div class="span12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th><i class="icon-warning-sign"></i></th>
+                        <th>Allergi</th>
+                        <th>Reaktion</th>
+                        <th>Alvorlighedsgrad</th>
+                        <th>Reaktionshyppighed</th>
+                        <th>Omr&aring;de</th>
+                        <th>...</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="registration in identity.caveRegistrations">
+                        <td><i class="icon-warning-sign" ng-show="registration.warning"></i></td>
+                        <td>{{registration.allergyTerm}}</td>
+                        <td>{{registration.reaction}}</td>
+                        <td>{{registration.grade}}</td>
+                        <td>{{registration.reactionFrequency}}</td>
+                        <td>{{registration.area}}</td>
+                        <td>
+                            <a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a>
+                            <a ng-click="deleteRegistration(registration)"><i class="icon-trash"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12" style="text-align: center;">
+                <a class="btn btn-small" ng-click="addRegistration()"><i class="icon-plus"></i>&nbsp;Ny registrering</a>
+            </div>
         </div>
     </div>
-    <div id="conceptBrowser" class="row" style="display: none;">
-        <div class="span9">
-            <form class="well form-search" ng-submit="findConcept()">
-                <input type="text" ng-model="drugQuery" placeholder="Find drug" class="input-medium search-query" typeahead/>
-                <input class="btn" type="submit" value="Search"/>
-            </form>
+    <hr/>
+    <div class="row-fluid" cave-registration="selectedRegistration" ng-show="selectedRegistration">
+        <div class="span8">
+            <div class="well">
+                <div class="span12 input-append">
+                    <input type="text" ng-model="drugQuery" placeholder="Find drug" typeahead/>
+                    <button class="btn" ng-click="findDrug(drugQuery)">Search</button>
+                </div>
 
-            <div concept="concept" ng-show="concept"></div>
+                <div concept="allergyTree"></div>
+            </div>
         </div>
-        <div class="span3">
-            <div class="well well-small">Boks 1</div>
-            <div class="well well-small">Boks 2</div>
-            <div class="well well-small">Boks 3</div>
+        <div class="span4 pull-right">
+            <div class="well well-small">
+                <label for="reaction">Reaktion</label>
+                <input id="reaction" type="text" ng-model="registration.reaction">
+                <label for="grade">Alvorlighedsgrad</label>
+                <input id="grade" type="text" ng-model="registration.grade">
+                <label for="reactionFrequency">Reaktionshyppighed</label>
+                <input id="reactionFrequency" type="text" ng-model="registration.reactionFrequency">
+                <label for="area">Omr&aring;de</label>
+                <input id="area" type="text" ng-model="registration.area">
+                <label class="checkbox">
+                    <input type="checkbox" ng-model="registration.warning"/>
+                    Advarsel
+                </label>
+            </div>
         </div>
     </div>
-
-
 </div>
 </body>
 </html>

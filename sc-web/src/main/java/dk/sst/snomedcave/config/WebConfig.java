@@ -1,23 +1,23 @@
 package dk.sst.snomedcave.config;
 
-import dk.sst.snomedcave.controllers.ConceptController;
-import dk.sst.snomedcave.controllers.DrugController;
-import dk.sst.snomedcave.controllers.WebUtils;
+import dk.sst.snomedcave.controllers.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import java.util.List;
 
 @Configuration
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/*").addResourceLocations("/");
+        registry.addResourceHandler("/img/*").addResourceLocations("/img/");
+    }
+
+    @Bean
+    public StaticController staticController() {
+        return new StaticController();
     }
 
     @Bean
@@ -28,6 +28,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public DrugController drugController() {
         return new DrugController();
+    }
+
+    @Bean
+    public IdentityController identityController() {
+        return new IdentityController();
     }
 
     @Bean

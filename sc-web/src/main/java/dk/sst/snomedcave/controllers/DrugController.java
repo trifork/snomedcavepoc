@@ -1,9 +1,6 @@
 package dk.sst.snomedcave.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.dao.DrugRepository;
 import dk.sst.snomedcave.model.Concept;
@@ -21,7 +18,6 @@ import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Traverser;
 import org.neo4j.kernel.Traversal;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -32,7 +28,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 @Controller
@@ -54,20 +49,20 @@ public class DrugController {
 
     @RequestMapping(value = "search", produces = "application/json")
     public ResponseEntity<String> search(@RequestParam("q") String drugQuery) {
-        List<Drug> drugs = drugRepository.findByDrugNameLike(String.format("*%s*", drugQuery));
+        List<Drug> drugs = drugRepository.findByNameLike(String.format("*%s*", drugQuery));
         if (drugs.isEmpty()) {
             return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
         }
         JsonArray response = new JsonArray();
         for (Drug drug : drugs) {
-            response.add(new JsonPrimitive(String.format("%s", drug.getDrugName())));
+            response.add(new JsonPrimitive(String.format("%s", drug.getName())));
         }
         return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
     }
 
     @RequestMapping(value = "concepttree", produces = "application/json")
     public ResponseEntity<String> tree(@RequestParam("name") String drugName) {
-        final List<Drug> drugs = drugRepository.findByDrugNameLike(drugName);
+        final List<Drug> drugs = drugRepository.findByNameLike("\"" + drugName.replace("\"", "\\\"") + "\"");
         if (drugs.size() > 1) {
             logger.warn("Found more than one drug for drugName=" + drugName + ", count=" + drugs.size());
         }
@@ -103,9 +98,9 @@ public class DrugController {
 
         concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("location", singletonList("/concepts/tree?id=" + concept.getConceptId()));
-        return new ResponseEntity<String>(headers, HttpStatus.MOVED_TEMPORARILY);
+        JsonObject response = new JsonObject();
+        response.addProperty("allergyId", concept.getConceptId());
+        return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
     }
 
     private long causativeAgentId() {

@@ -11,10 +11,8 @@ public class Drug extends NodeObject {
     @Indexed
     private String drugId;
 
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "DrugFull", fieldName = "drugName")
-    private String drugName;
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "DrugFull", fieldName = "substance")
-    private String substance;
+    @Indexed(indexType = IndexType.FULLTEXT, indexName = "DrugFull", fieldName = "name")
+    private String name;
 
     @Fetch
     private Concept refersTo;
@@ -27,20 +25,12 @@ public class Drug extends NodeObject {
         this.drugId = drugId;
     }
 
-    public String getDrugName() {
-        return drugName;
+    public String getName() {
+        return name;
     }
 
-    public void setDrugName(String drugName) {
-        this.drugName = drugName;
-    }
-
-    public String getSubstance() {
-        return substance;
-    }
-
-    public void setSubstance(String substance) {
-        this.substance = substance;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Concept getRefersTo() {

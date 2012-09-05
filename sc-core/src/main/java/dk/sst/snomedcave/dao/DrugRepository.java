@@ -8,5 +8,6 @@ import java.util.List;
 public interface DrugRepository extends GraphRepository<Drug> {
     Drug getByDrugId(String drugId);
 
-    List<Drug> findByDrugNameLike(String drugName);
+    List<Drug> findByNameLike(String name);
+
 }
