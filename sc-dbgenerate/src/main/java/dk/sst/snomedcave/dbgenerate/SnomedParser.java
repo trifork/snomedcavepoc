@@ -165,7 +165,7 @@ public class SnomedParser {
                 inserter.createRelationship(nodeId, concept1NodeId, withName("child"), null);
                 inserter.createRelationship(nodeId, conceptTypeNodeId, withName("type"), null);
 
-                if (count % 1000 == 0) {
+                if (count % 10000 == 0) {
                     logger.debug(String.format("time=%d, count=%d", currentTimeMillis() - startTime, count));
                 }
             }

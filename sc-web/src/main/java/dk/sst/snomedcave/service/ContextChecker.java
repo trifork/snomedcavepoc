@@ -36,7 +36,7 @@ public class ContextChecker implements ApplicationListener<ApplicationContextEve
     public void onApplicationEvent(ApplicationContextEvent event) {
         logger.info("Using neo4j store: " + ((EmbeddedGraphDatabase) neo4jTemplate.getGraphDatabaseService()).getStoreDir());
         if (event instanceof ContextRefreshedEvent) {
-            if (identityRepository.count() == 0) {
+            if (identityRepository.getByCpr("1010101010") == null) {
                 identityRepository.save(
                         new Identity(
                                 "1010101010",
@@ -44,18 +44,18 @@ public class ContextChecker implements ApplicationListener<ApplicationContextEve
                                 new HashSet<CaveRegistration>(asList(
                                         new CaveRegistration(
                                                 conceptRepository.getByConceptId("293610009"),
-                                                "Blue hair",
-                                                "A lot",
-                                                "Monthly",
-                                                "Head",
+                                                "Hoste",
+                                                "Livstruende",
+                                                "Lejlighedsvis",
+                                                "Priktest",
                                                 true
                                         ),
                                         new CaveRegistration(
                                                 conceptRepository.getByConceptId("295067003"),
-                                                "Big elbows",
-                                                "A lot",
-                                                "weekly",
-                                                "Arm",
+                                                "Mavesmerter",
+                                                "Generende",
+                                                "Sjælden",
+                                                "Patient-oplyst",
                                                 false
                                         )
                                 ))

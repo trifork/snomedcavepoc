@@ -14,19 +14,19 @@ public class CaveRegistration extends NodeObject {
 
     private String reactionFrequency;
 
-    private String area;
+    private String verification;
 
     private boolean warning;
 
     public CaveRegistration() {
     }
 
-    public CaveRegistration(Concept allergy, String reaction, String grade, String reactionFrequency, String area, boolean warning) {
+    public CaveRegistration(Concept allergy, String reaction, String grade, String reactionFrequency, String verification, boolean warning) {
         this.allergy = allergy;
         this.reaction = reaction;
         this.grade = grade;
         this.reactionFrequency = reactionFrequency;
-        this.area = area;
+        this.verification = verification;
         this.warning = warning;
     }
 
@@ -62,12 +62,12 @@ public class CaveRegistration extends NodeObject {
         this.reactionFrequency = reactionFrequency;
     }
 
-    public String getArea() {
-        return area;
+    public String getVerification() {
+        return verification;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setVerification(String verification) {
+        this.verification = verification;
     }
 
     public boolean isWarning() {
