@@ -31,6 +31,9 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         $scope.identity.caveRegistrations.push(registration)
         $scope.selectedRegistration = registration
     }
+    $scope.hideRegistration = function() {
+        $scope.selectedRegistration = undefined
+    }
 
     $scope.$watch("identity", function(newValue, oldValue) {
         $scope.selectedRegistration = undefined
@@ -57,12 +60,13 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
 
 module.directive("tooltip", function() {
     return function(scope, element, attrs) {
+        var placement = attrs.tooltipPlacement;
         scope.$watch(
             function() {return attrs.tooltip},
             function(newValue) {
                 element.tooltip({
                     title: newValue,
-                    placement: "left"
+                    placement: placement
                 })
             })
     }
@@ -83,7 +87,7 @@ module.directive("caveRegistration", function($http, $log) {
                 getConcept(registration.allergyId)
             }
             else {
-                //TODO: hide something?
+                scope.allergyTree = {}
             }
         }
 
