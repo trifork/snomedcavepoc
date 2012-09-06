@@ -1,8 +1,9 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign\"></i></a>&nbsp;" +
-        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId}\" style='cursor: pointer;'>{{conceptTree.name}}</span>" +
+var treeHtml = "<span>" +
+    "<a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign\"></i>&nbsp;</a>" +
+        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId, endconcept: !conceptTree.hasChilds}\" style='cursor: pointer;'>{{conceptTree.name}}</span>" +
     "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
         "<li ng-repeat=\"child in conceptTree.childs\">" +
