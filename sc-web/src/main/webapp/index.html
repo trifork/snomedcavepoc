@@ -68,14 +68,14 @@
             <div class="span8">
                 <div class="span12 input-append">
                     <input type="text" ng-model="drugQuery" placeholder="Find drug" typeahead/>
-                    <button class="btn" ng-click="findDrug(drugQuery)"><i class="icon-search"></i>&nbsp;S&oslash;g
-                    </button>
+                    <button class="btn" ng-click="findDrug(drugQuery)"><i class="icon-search"></i>&nbsp;S&oslash;g </button>
                 </div>
 
                 <div concept="allergyTree"></div>
             </div>
             <div class="span4 pull-right">
                 <label class="checkbox">
+                    <!--TODO: move input to right side of text-->
                     <i class="icon-warning-sign"></i>&nbsp;Advarsel
                     <input type="checkbox" ng-model="registration.warning"/>
                 </label>
