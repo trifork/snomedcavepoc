@@ -113,18 +113,18 @@ module.directive("caveRegistration", function($http, $log) {
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
 module.directive("conceptTree", function($compile, $http) {
     function ConceptTreeCtrl($scope) {
-        $scope.expandToggle = function(conceptTree) {
-            if (conceptTree.childs.length == 0) {
-                $http.get("/concepts/node?id=" + conceptTree.conceptId).success(function(data, status) {
-                    conceptTree.childs = data.childs;
+        $scope.expandToggle = function(concept) {
+            if (concept.childs.length == 0) {
+                $http.get("/concepts/node?id=" + concept.conceptId).success(function(data, status) {
+                    concept.childs = data.childs;
                 })
             }
             else {
-                conceptTree.childs = []
+                concept.childs = []
             }
         }
-        $scope.plusMinus = function(conceptTree) {
-            if (conceptTree && conceptTree.childs.length > 0) {
+        $scope.plusMinus = function(concept) {
+            if (concept && angular.isArray(concept.childs) && concept.childs.length > 0) {
                 return "minus"
             }
             else {
