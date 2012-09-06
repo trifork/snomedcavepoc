@@ -8,7 +8,7 @@
     <script type="text/javascript" src="/js/application.js" charset="utf-8"></script>
     <link rel="stylesheet" href="/css/bootstrap.css"/>
     <link rel="stylesheet" href="/css/app.css"/>
-    <title>Hello world</title>
+    <title>Cave register</title>
 </head>
 <body>
 <div class="container-fluid" ng-controller="IdentityCtrl">
@@ -73,7 +73,7 @@
                     </button>
                 </div>
 
-                <div concept="allergyTree"></div>
+                <div concept-tree="allergyTree" selected-registration="selectedRegistration"></div>
             </div>
             <div class="span4 pull-right">
                 <label class="checkbox">
@@ -82,9 +82,6 @@
                 </label>
 
                 <label for="reaction">Reaktion</label>
-                <!--
-                verifikationsmåde - (patient-oplyst, blodprøve, priktest)
-                -->
                 <select ng-model="registration.reaction" id="reaction">
                     <option>Udsl&aelig;t</option>
                     <option>Hoste</option>

@@ -1,12 +1,12 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;" +
-        "<span ng-click='selectConcept(concept)' ng-class=\"{selected: concept.conceptId == selectedConceptId}\">{{concept.name}}</span>" +
+var treeHtml = "<span><a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign\"></i></a>&nbsp;" +
+        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId}\">{{conceptTree.name}}</span>" +
     "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
-        "<li ng-repeat=\"child in concept.childs\">" +
-            "<span concept=\"child\"></span>" +
+        "<li ng-repeat=\"child in conceptTree.childs\">" +
+            "<span concept-tree=\"child\" selected-registration=\"selectedRegistration\"></span>" +
         "</li>" +
     "</ul>"
 
@@ -110,20 +110,20 @@ module.directive("caveRegistration", function($http, $log) {
 })
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
-module.directive("concept", function($compile, $http) {
-    function ConceptCtrl($scope) {
-        $scope.expandToggle = function(concept) {
-            if (concept.childs.length == 0) {
-                $http.get("/concepts/node?id=" + concept.conceptId).success(function(data, status) {
-                    concept.childs = data.childs;
+module.directive("conceptTree", function($compile, $http) {
+    function ConceptTreeCtrl($scope) {
+        $scope.expandToggle = function(conceptTree) {
+            if (conceptTree.childs.length == 0) {
+                $http.get("/concepts/node?id=" + conceptTree.conceptId).success(function(data, status) {
+                    conceptTree.childs = data.childs;
                 })
             }
             else {
-                concept.childs = []
+                conceptTree.childs = []
             }
         }
-        $scope.plusMinus = function(concept) {
-            if (concept && concept.childs.length > 0) {
+        $scope.plusMinus = function(conceptTree) {
+            if (conceptTree && conceptTree.childs.length > 0) {
                 return "minus"
             }
             else {
@@ -131,14 +131,16 @@ module.directive("concept", function($compile, $http) {
             }
         }
         $scope.selectConcept = function(newConcept) {
-            $scope.selectedConceptId = newConcept.conceptId;
+            $scope.selectedRegistration.allergyId = newConcept.conceptId;
+            $scope.selectedRegistration.allergyTerm = newConcept.name;
         }
     }
 
     return {
-        controller: ConceptCtrl,
+        controller: ConceptTreeCtrl,
         scope: {
-            concept: "="
+            conceptTree: "=",
+            selectedRegistration: "="
         },
         link: function(scope, elm, attrs) {
             return elm.append($compile(treeHtml)(scope))
