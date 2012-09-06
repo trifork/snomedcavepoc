@@ -1,17 +1,19 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;<span ng-click='selectConcept(concept)'>{{concept.name}}</span></span>" +
+var treeHtml = "<span>" +
+    "<a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign\"></i>&nbsp;</a>" +
+        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId, endconcept: !conceptTree.hasChilds}\" style='cursor: pointer;'>{{conceptTree.name}}</span>" +
+    "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
-        "<li ng-repeat=\"child in concept.childs\">" +
-            "<span concept=\"child\"></span>" +
+        "<li ng-repeat=\"child in conceptTree.childs\">" +
+            "<span concept-tree=\"child\" selected-registration=\"selectedRegistration\"></span>" +
         "</li>" +
     "</ul>"
 
 module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.findIdentity = function() {
         $http.get("/identities/" + $scope.identityCpr).success(function(data, status) {
-            //$location.path("/identities/" + $scope.identityCpr)
             $scope.identity = data;
         })
     }
@@ -92,6 +94,7 @@ module.directive("caveRegistration", function($http, $log) {
         }
 
         scope.findDrug = function(query) {
+            scope.allergyTree = undefined;
             $log.info("Will lookup " + query)
             $http.get("/drugs/concepttree?name=" + query).success(function(drug, status) {
                 getConcept(drug.allergyId)
@@ -108,8 +111,8 @@ module.directive("caveRegistration", function($http, $log) {
 })
 
 //TODO: consider implementing @andershessellund's example https://groups.google.com/forum/?fromgroups#!topic/angular/I5Z5oglW6Xw%5B1-25%5D
-module.directive("concept", function($compile, $http) {
-    function ConceptCtrl($scope) {
+module.directive("conceptTree", function($compile, $http) {
+    function ConceptTreeCtrl($scope) {
         $scope.expandToggle = function(concept) {
             if (concept.childs.length == 0) {
                 $http.get("/concepts/node?id=" + concept.conceptId).success(function(data, status) {
@@ -121,22 +124,24 @@ module.directive("concept", function($compile, $http) {
             }
         }
         $scope.plusMinus = function(concept) {
-            if (concept && concept.childs.length > 0) {
+            if (concept && angular.isArray(concept.childs) && concept.childs.length > 0) {
                 return "minus"
             }
             else {
                 return "plus"
             }
         }
-        $scope.selectConcept = function(concept) {
-            alert("Selected " + concept.name)
+        $scope.selectConcept = function(newConcept) {
+            $scope.selectedRegistration.allergyId = newConcept.conceptId;
+            $scope.selectedRegistration.allergyTerm = newConcept.name;
         }
     }
 
     return {
-        controller: ConceptCtrl,
+        controller: ConceptTreeCtrl,
         scope: {
-            concept: "="
+            conceptTree: "=",
+            selectedRegistration: "="
         },
         link: function(scope, elm, attrs) {
             return elm.append($compile(treeHtml)(scope))
