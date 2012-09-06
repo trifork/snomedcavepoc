@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 <head>
-    <script type="text/javascript" src="js/jquery-1.8.0.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/bootstrap.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/angular-1.0.1.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/underscore-min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="js/application.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="css/bootstrap.css"/>
-    <title>Hello world</title>
+    <script type="text/javascript" src="/js/jquery-1.8.0.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/bootstrap.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/angular-1.0.1.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/underscore-min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/application.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/app.css"/>
+    <title>Cave register</title>
 </head>
 <body>
 <div class="container-fluid" ng-controller="IdentityCtrl">
@@ -34,8 +35,8 @@
                         <th>Reaktion</th>
                         <th>Alvorlighedsgrad</th>
                         <th>Reaktionshyppighed</th>
-                        <th>Omr&aring;de</th>
-                        <th>...</th>
+                        <th>Verifikationsm&aring;de</th>
+                        <th>&nbsp;</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,7 +46,7 @@
                         <td>{{registration.reaction}}</td>
                         <td>{{registration.grade}}</td>
                         <td>{{registration.reactionFrequency}}</td>
-                        <td>{{registration.area}}</td>
+                        <td>{{registration.verification}}</td>
                         <td>
                             <a ng-click="selectRegistration(registration)" tooltip="Rediger registrering" tooltip-placement="left"><i class="icon-edit"></i></a>
                             <a ng-click="deleteRegistration(registration)" tooltip="Slet registrering" tooltip-placement="left"><i class="icon-trash"></i></a>
@@ -67,12 +68,12 @@
         <div class="row-fluid" cave-registration="selectedRegistration">
             <div class="span8">
                 <div class="span12 input-append">
-                    <input type="text" ng-model="drugQuery" placeholder="Find drug" typeahead/>
+                    <input type="text" ng-model="drugQuery" placeholder="L&aelig;gemiddel eller indholdsstof" typeahead/>
                     <button class="btn" ng-click="findDrug(drugQuery)"><i class="icon-search"></i>&nbsp;S&oslash;g
                     </button>
                 </div>
 
-                <div concept="allergyTree"></div>
+                <div concept-tree="allergyTree" selected-registration="selectedRegistration"></div>
             </div>
             <div class="span4 pull-right">
                 <label class="checkbox">
@@ -81,9 +82,6 @@
                 </label>
 
                 <label for="reaction">Reaktion</label>
-                <!--
-                verifikationsmåde - (patient-oplyst, blodprøve, priktest)
-                -->
                 <select ng-model="registration.reaction" id="reaction">
                     <option>Udsl&aelig;t</option>
                     <option>Hoste</option>
