@@ -4,6 +4,7 @@
     <script type="text/javascript" src="js/jquery-1.8.0.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/bootstrap.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/angular-1.0.1.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/underscore-min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/application.js" charset="utf-8"></script>
     <link rel="stylesheet" href="css/bootstrap.css"/>
     <title>Hello world</title>
@@ -28,7 +29,7 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th><i class="icon-warning-sign"></i></th>
+                        <th>Advarsel</i></th>
                         <th>Allergi</th>
                         <th>Reaktion</th>
                         <th>Alvorlighedsgrad</th>
@@ -39,15 +40,15 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="registration in identity.caveRegistrations">
-                        <td><i class="icon-warning-sign" ng-show="registration.warning"></i></td>
+                        <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="S&aelig;rlig kritisk cave registrering" tooltip-placement="right"></i></td>
                         <td>{{registration.allergyTerm}}</td>
                         <td>{{registration.reaction}}</td>
                         <td>{{registration.grade}}</td>
                         <td>{{registration.reactionFrequency}}</td>
                         <td>{{registration.area}}</td>
                         <td>
-                            <a ng-click="selectRegistration(registration)"><i class="icon-edit"></i></a>
-                            <a ng-click="deleteRegistration(registration)"><i class="icon-trash"></i></a>
+                            <a ng-click="selectRegistration(registration)" tooltip="Rediger registrering" tooltip-placement="left"><i class="icon-edit"></i></a>
+                            <a ng-click="deleteRegistration(registration)" tooltip="Slet registrering" tooltip-placement="left"><i class="icon-trash"></i></a>
                         </td>
                     </tr>
                     </tbody>
@@ -61,31 +62,55 @@
         </div>
     </div>
     <hr/>
-    <div class="row-fluid" cave-registration="selectedRegistration" ng-show="selectedRegistration">
-        <div class="span8">
-            <div class="well">
+    <div class="well" ng-show="selectedRegistration">
+        <button class="close" type="button" ng-click="hideRegistration()">x</button>
+        <div class="row-fluid" cave-registration="selectedRegistration">
+            <div class="span8">
                 <div class="span12 input-append">
                     <input type="text" ng-model="drugQuery" placeholder="Find drug" typeahead/>
-                    <button class="btn" ng-click="findDrug(drugQuery)">Search</button>
+                    <button class="btn" ng-click="findDrug(drugQuery)"><i class="icon-search"></i>&nbsp;S&oslash;g
+                    </button>
                 </div>
 
                 <div concept="allergyTree"></div>
             </div>
-        </div>
-        <div class="span4 pull-right">
-            <div class="well well-small">
-                <label for="reaction">Reaktion</label>
-                <input id="reaction" type="text" ng-model="registration.reaction">
-                <label for="grade">Alvorlighedsgrad</label>
-                <input id="grade" type="text" ng-model="registration.grade">
-                <label for="reactionFrequency">Reaktionshyppighed</label>
-                <input id="reactionFrequency" type="text" ng-model="registration.reactionFrequency">
-                <label for="area">Omr&aring;de</label>
-                <input id="area" type="text" ng-model="registration.area">
+            <div class="span4 pull-right">
                 <label class="checkbox">
+                    <i class="icon-warning-sign"></i>&nbsp;Advarsel
                     <input type="checkbox" ng-model="registration.warning"/>
-                    Advarsel
                 </label>
+
+                <label for="reaction">Reaktion</label>
+                <!--
+                verifikationsmåde - (patient-oplyst, blodprøve, priktest)
+                -->
+                <select ng-model="registration.reaction" id="reaction">
+                    <option>Udsl&aelig;t</option>
+                    <option>Hoste</option>
+                    <option>Mavesmerter</option>
+                    <option>Anafylaksis</option>
+                </select>
+
+                <label for="grade">Alvorlighedsgrad</label>
+                <select ng-model="registration.grade" id="grade">
+                    <option>Livstruende</option>
+                    <option>Harmfuld</option>
+                    <option>Generende</option>
+                </select>
+
+                <label for="reactionFrequency">Reaktionshyppighed</label>
+                <select ng-model="registration.reactionFrequency" id="reactionFrequency">
+                    <option>Hyppig</option>
+                    <option>Lejlighedsvis</option>
+                    <option>Sj&aelig;lden</option>
+                </select>
+
+                <label for="verification">Omr&aring;de</label>
+                <select ng-model="registration.verification" id="verification">
+                    <option>Patient-oplyst</option>
+                    <option>Blodpr&oslash;ve</option>
+                    <option>Priktest</option>
+                </select>
             </div>
         </div>
     </div>

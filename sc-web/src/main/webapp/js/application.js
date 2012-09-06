@@ -24,12 +24,15 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         $scope.selectedRegistration = registration
     }
     $scope.deleteRegistration = function(registration) {
-        $scope.identity.caveRegistrations.pop(registration)
+        $scope.identity.caveRegistrations = _.without($scope.identity.caveRegistrations, registration)
     }
     $scope.addRegistration = function() {
         var registration = {};
         $scope.identity.caveRegistrations.push(registration)
         $scope.selectedRegistration = registration
+    }
+    $scope.hideRegistration = function() {
+        $scope.selectedRegistration = undefined
     }
 
     $scope.$watch("identity", function(newValue, oldValue) {
@@ -55,6 +58,20 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     })
 })
 
+module.directive("tooltip", function() {
+    return function(scope, element, attrs) {
+        var placement = attrs.tooltipPlacement;
+        scope.$watch(
+            function() {return attrs.tooltip},
+            function(newValue) {
+                element.tooltip({
+                    title: newValue,
+                    placement: placement
+                })
+            })
+    }
+})
+
 module.directive("caveRegistration", function($http, $log) {
     return function(scope, element, attrs) {
         var registration;
@@ -70,7 +87,7 @@ module.directive("caveRegistration", function($http, $log) {
                 getConcept(registration.allergyId)
             }
             else {
-                //TODO: hide something?
+                scope.allergyTree = {}
             }
         }
 

@@ -4,7 +4,6 @@ import com.google.gson.*;
 import dk.sst.snomedcave.dao.IdentityRepository;
 import dk.sst.snomedcave.model.CaveRegistration;
 import dk.sst.snomedcave.model.Identity;
-import org.apache.commons.collections15.Transformer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,7 +42,7 @@ public class IdentityController {
             element.addProperty("allergyId", registration.getAllergy().getConceptId());
             element.addProperty("allergyTerm", registration.getAllergy().getTerm());
             element.addProperty("nodeId", registration.getNodeId());
-            element.addProperty("area", registration.getArea());
+            element.addProperty("verification", registration.getVerification());
             element.addProperty("grade", registration.getGrade());
             element.addProperty("reaction", registration.getReaction());
             element.addProperty("reactionFrequency", registration.getReactionFrequency());
