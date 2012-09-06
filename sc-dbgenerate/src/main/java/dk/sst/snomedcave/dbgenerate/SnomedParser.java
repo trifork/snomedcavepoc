@@ -6,6 +6,7 @@ import org.beanio.StreamFactory;
 import org.neo4j.unsafe.batchinsert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
-    public static final String STORE_DIR = System.getProperty("user.home") + "/.sc-poc/data.db";
+    public static final String STORE_DIR = "/var/sc-poc/data.db";
 
     StreamFactory factory = StreamFactory.newInstance();
 
@@ -61,7 +62,11 @@ public class SnomedParser {
 
     private BeanReader getBeanReader(String classpathPath, String config) {
         File file = new File(getClass().getResource(classpathPath).getFile());
-        factory.load("/Users/mwl/IdeaProjects/SnomedCave/snomedcavepoc/sc-dbgenerate/src/main/resources/beanio-" + config + ".xml");
+        try {
+            factory.load(getClass().getResourceAsStream("/beanio-" + config + ".xml"));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load config", e);
+        }
         return factory.createReader(config, file);
     }
 
@@ -126,8 +131,6 @@ public class SnomedParser {
             put("__type__", "dk.sst.snomedcave.model.Concept");
             put("conceptId", conceptId);
         }});
-        //conceptFullIndex.add(nodeId, new HashMap<String, Object>() {{
-        //}});
 
         nodeTypeIndex.add(nodeId, new HashMap<String, Object>() {{
             put("className", "dk.sst.snomedcave.model.Concept");
