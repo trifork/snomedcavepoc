@@ -1,7 +1,9 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
 
-var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;<span ng-click='selectConcept(concept)'>{{concept.name}}</span></span>" +
+var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasChilds'><i class=\"icon-{{plusMinus(concept)}}-sign\"></i></a>&nbsp;" +
+        "<span ng-click='selectConcept(concept)' ng-class=\"{selected: concept.conceptId == selectedConceptId}\">{{concept.name}}</span>" +
+    "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
         "<li ng-repeat=\"child in concept.childs\">" +
             "<span concept=\"child\"></span>" +
@@ -11,7 +13,6 @@ var treeHtml = "<span><a ng-click='expandToggle(concept)' ng-show='concept.hasCh
 module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.findIdentity = function() {
         $http.get("/identities/" + $scope.identityCpr).success(function(data, status) {
-            //$location.path("/identities/" + $scope.identityCpr)
             $scope.identity = data;
         })
     }
@@ -92,6 +93,7 @@ module.directive("caveRegistration", function($http, $log) {
         }
 
         scope.findDrug = function(query) {
+            scope.allergyTree = undefined;
             $log.info("Will lookup " + query)
             $http.get("/drugs/concepttree?name=" + query).success(function(drug, status) {
                 getConcept(drug.allergyId)
@@ -128,8 +130,8 @@ module.directive("concept", function($compile, $http) {
                 return "plus"
             }
         }
-        $scope.selectConcept = function(concept) {
-            alert("Selected " + concept.name)
+        $scope.selectConcept = function(newConcept) {
+            $scope.selectedConceptId = newConcept.conceptId;
         }
     }
 
