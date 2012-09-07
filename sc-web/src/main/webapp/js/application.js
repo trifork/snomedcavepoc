@@ -18,7 +18,9 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
         })
     }
     $scope.saveIdentity = function() {
-        alert("Should save...")
+        $http.put("/identities/" + $scope.identity.cpr, $scope.identity).success(function(data, status) {
+            //TODO: show identity is saved
+        })
     }
 
     $scope.selectRegistration = function(registration) {

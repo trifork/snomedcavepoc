@@ -14,7 +14,7 @@ import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
-    public static final String STORE_DIR = System.getProperty("user.home") + "/.sc-poc/data.db";
+    public static final String STORE_DIR = "/var/sc-poc/data.db";
 
     StreamFactory factory = StreamFactory.newInstance();
 
