@@ -16,7 +16,7 @@ public class CaveRegistration extends NodeObject {
 
     private String verification;
 
-    private boolean warning;
+    private boolean warning = false;
 
     public CaveRegistration() {
     }

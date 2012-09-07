@@ -32,7 +32,9 @@ public class CaveRegistrationSerializer implements WebSerializer<CaveRegistratio
         registration.setGrade(json.get("grade").getAsString());
         registration.setReaction(json.get("reaction").getAsString());
         registration.setReactionFrequency(json.get("reactionFrequency").getAsString());
-        registration.setWarning(json.get("warning").getAsBoolean());
+        if (json.get("warning") != null) {
+            registration.setWarning(json.get("warning").getAsBoolean());
+        }
         return registration;
     }
 
