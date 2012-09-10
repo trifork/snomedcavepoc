@@ -74,10 +74,10 @@ public class ConceptController {
     }
 
     @RequestMapping(value = "node", produces = "application/json")
-    public ResponseEntity<String> nodeJson(@RequestParam("id") String conceptId) {
+    public ResponseEntity<byte[]> nodeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
         final Concept concept = conceptRepository.getByConceptId(conceptId);
-        return new ResponseEntity<String>(gson.toJson(
+        return new ResponseEntity<byte[]>(gson.toJson(
                 new ConceptNode(
                         concept.getConceptId(),
                         concept.getTerm(),
@@ -87,14 +87,14 @@ public class ConceptController {
                                 Concept child = get(get(relation).getChild());
                                 return new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0);
                             }
-                        })))
+                        }))).getBytes()
                 , HttpStatus.OK);
     }
 
     @RequestMapping(value = "tree", produces = "application/json")
-    public ResponseEntity<String> treeJson(@RequestParam("id") String conceptId) {
+    public ResponseEntity<byte[]> treeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
-        return new ResponseEntity<String>(gson.toJson(conceptTree(conceptId).getRoot()), HttpStatus.OK);
+        return new ResponseEntity<byte[]>(gson.toJson(conceptTree(conceptId).getRoot()).getBytes(), HttpStatus.OK);
     }
 
     public TreeResponse conceptTree(String conceptId) {

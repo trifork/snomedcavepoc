@@ -27,9 +27,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
     public Gson gson(WebSerializer<?>[] serializers) {
         GsonBuilder builder = new GsonBuilder();
-        logger.debug("Got " + serializers.length + " WebSerializers");
         for (WebSerializer<?> serializer : serializers) {
-            logger.debug("Registrering " + serializer.getClass().getName() + ", for type " + serializer.getType().getName());
             builder.registerTypeAdapter(serializer.getType(), serializer);
         }
         return builder.create();
