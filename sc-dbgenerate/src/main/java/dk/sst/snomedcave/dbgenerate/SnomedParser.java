@@ -6,6 +6,7 @@ import org.beanio.StreamFactory;
 import org.neo4j.unsafe.batchinsert.*;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +83,11 @@ public class SnomedParser {
             else if ("term".equals(in.getRecordName())) {
                 final Map<String, Object> term = (Map<String, Object>) record;
 
-                conceptTerms.put((String) term.get("conceptId"), (String) term.get("term"));
+                try {
+                    conceptTerms.put((String) term.get("conceptId"), new String(((String) term.get("term")).getBytes(), "ISO-8859-1"));
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException("encoding", e);
+                }
             }
             else {
                 logger.warn("unable to parse \"" + record + "\"");
