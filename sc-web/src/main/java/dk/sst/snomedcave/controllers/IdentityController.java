@@ -17,7 +17,6 @@ import java.io.UnsupportedEncodingException;
 @Controller
 @RequestMapping("/identities/")
 public class IdentityController {
-    private static Logger logger = Logger.getLogger(IdentityController.class);
     @Inject
     IdentityRepository identityRepository;
     @Inject
@@ -26,19 +25,19 @@ public class IdentityController {
     @Inject
     Gson gson;
 
-    @RequestMapping(value = "echo", produces = "application/json")
+    @RequestMapping(value = "echo", produces = "application/json;charset=utf-8")
     @ResponseBody
     public String echo(@RequestParam(value = "e", required = false, defaultValue = "æøåÆØÅ") String e) throws UnsupportedEncodingException {
         return e;
     }
 
-    @RequestMapping(value = "{cpr}", produces = "application/json", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> get(@PathVariable("cpr") String cpr) {
+    @RequestMapping(value = "{cpr}", produces = "application/json;charset=utf-8", method = RequestMethod.GET)
+    public ResponseEntity<String> get(@PathVariable("cpr") String cpr) {
         Identity identity = identityRepository.getByCpr(cpr);
         if (identity == null) {
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<byte[]>(gson.toJson(identity).getBytes(), HttpStatus.OK);
+        return new ResponseEntity<String>(gson.toJson(identity), HttpStatus.OK);
     }
 
     @RequestMapping(value = "{cpr}", method = RequestMethod.PUT)

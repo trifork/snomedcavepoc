@@ -47,7 +47,7 @@ public class DrugController {
 
     private static Concept causativeAgentAttribute;
 
-    @RequestMapping(value = "search", produces = "application/json")
+    @RequestMapping(value = "search", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> search(@RequestParam("q") String drugQuery) {
         List<Drug> drugs = drugRepository.findByNameLike(String.format("*%s*", drugQuery));
         if (drugs.isEmpty()) {
@@ -60,7 +60,7 @@ public class DrugController {
         return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "concepttree", produces = "application/json")
+    @RequestMapping(value = "concepttree", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> tree(@RequestParam("name") String drugName) {
         final List<Drug> drugs = drugRepository.findByNameLike("\"" + drugName.replace("\"", "\\\"") + "\"");
         if (drugs.size() > 1) {
