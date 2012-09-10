@@ -6,6 +6,8 @@ import dk.sst.snomedcave.dao.ConceptRelationRepository;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
+import org.apache.commons.collections15.CollectionUtils;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.log4j.Logger;
 import org.neo4j.graphdb.Direction;
@@ -23,10 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
@@ -56,11 +55,20 @@ public class ConceptController {
     @Inject
     WebUtils webUtils;
 
+    private Concept isAType;
+    private Concept associatedFindingType;
+
     final TraversalDescription td = Traversal.description()
             .breadthFirst()
             .relationships(withName("childs"), Direction.OUTGOING)
             .relationships(withName("child"), Direction.OUTGOING);
 
+    private Concept getIsA() {
+        if (isAType == null) {
+            isAType = conceptRepository.getByConceptId("116680003");
+        }
+        return isAType;
+    }
 
     @RequestMapping(value = "search", produces = "application/json")
     public ResponseEntity<String> search(@RequestParam("query") String query) {
@@ -97,7 +105,7 @@ public class ConceptController {
         return new ResponseEntity<byte[]>(gson.toJson(conceptTree(conceptId).getRoot()).getBytes(), HttpStatus.OK);
     }
 
-    public TreeResponse conceptTree(String conceptId) {
+    public TreeResponse conceptTree(final String conceptId) {
         Concept target = conceptRepository.getByConceptId(conceptId);
         if (target == null) {
             logger.debug("Did not find any concepts with conceptId=" + conceptId);
@@ -105,10 +113,17 @@ public class ConceptController {
         }
         List<Concept> levels = getThreeLevelsUpFrom(target);
         reverse(levels);
+        final Set<ConceptRelation> rootChilds = new HashSet<ConceptRelation>(target.getChilds());
+        CollectionUtils.filter(rootChilds, new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                return shouldInclude(relation);
+            }
+        });
         ConceptNode root = new ConceptNode(
                 target.getConceptId(),
                 target.getTerm(),
-                collect(target.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
+                collect(rootChilds, new Transformer<ConceptRelation, ConceptNode>() {
                     @Override
                     public ConceptNode transform(ConceptRelation relation) {
                         final Concept concept = get(get(relation).getChild());
@@ -116,7 +131,6 @@ public class ConceptController {
                     }
                 }));
 
-        //todo: add childs to root
         for (int i = 1; i <= 3; i++) {
             if (i >= levels.size()) {
                 break;
@@ -124,7 +138,14 @@ public class ConceptController {
             Concept concept = levels.get(i);
             root = new ConceptNode(concept.getConceptId(), concept.getTerm(), root);
             if (i == 1) { //First parent
-                for (ConceptRelation relation : concept.getChilds()) {
+                final Set<ConceptRelation> childs = new HashSet<ConceptRelation>(concept.getChilds());
+                CollectionUtils.filter(childs, new Predicate<ConceptRelation>() {
+                    @Override
+                    public boolean evaluate(ConceptRelation relation) {
+                        return shouldInclude(relation) && !get(get(relation).getChild()).getConceptId().equals(conceptId);
+                    }
+                });
+                for (ConceptRelation relation : childs) {
                     Concept child = get(get(relation).getChild());
                     if (!child.getConceptId().equals(root.conceptId)) {
                         root.childs.add(new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0));
@@ -135,6 +156,12 @@ public class ConceptController {
         }
 
         return new TreeResponse(root);
+    }
+
+    private boolean shouldInclude(ConceptRelation relation) {
+        final Concept concept = get(get(relation).getChild());
+        final Concept type = get(relation.getType());
+        return concept.getStatus() == 0 && type.getNodeId().equals(getIsA().getNodeId());
     }
 
     private List<Concept> getThreeLevelsUpFrom(Concept target) {
