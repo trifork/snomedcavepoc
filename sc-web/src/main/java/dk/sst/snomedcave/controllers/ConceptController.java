@@ -56,7 +56,6 @@ public class ConceptController {
     WebUtils webUtils;
 
     private Concept isAType;
-    private Concept associatedFindingType;
 
     final TraversalDescription td = Traversal.description()
             .breadthFirst()
@@ -70,7 +69,7 @@ public class ConceptController {
         return isAType;
     }
 
-    @RequestMapping(value = "search", produces = "application/json")
+    @RequestMapping(value = "search", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> search(@RequestParam("query") String query) {
         Concept concept = conceptRepository.getByFullyspecifiedName(query);
 
@@ -81,11 +80,11 @@ public class ConceptController {
         return new ResponseEntity<String>(webUtils.toJson(concept), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "node", produces = "application/json")
-    public ResponseEntity<byte[]> nodeJson(@RequestParam("id") String conceptId) {
+    @RequestMapping(value = "node", produces = "application/json;charset=utf-8")
+    public ResponseEntity<String> nodeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
         final Concept concept = conceptRepository.getByConceptId(conceptId);
-        return new ResponseEntity<byte[]>(gson.toJson(
+        return new ResponseEntity<String>(gson.toJson(
                 new ConceptNode(
                         concept.getConceptId(),
                         concept.getTerm(),
@@ -95,14 +94,14 @@ public class ConceptController {
                                 Concept child = get(get(relation).getChild());
                                 return new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0);
                             }
-                        }))).getBytes()
+                        })))
                 , HttpStatus.OK);
     }
 
-    @RequestMapping(value = "tree", produces = "application/json")
-    public ResponseEntity<byte[]> treeJson(@RequestParam("id") String conceptId) {
+    @RequestMapping(value = "tree", produces = "application/json;charset=utf-8")
+    public ResponseEntity<String> treeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
-        return new ResponseEntity<byte[]>(gson.toJson(conceptTree(conceptId).getRoot()).getBytes(), HttpStatus.OK);
+        return new ResponseEntity<String>(gson.toJson(conceptTree(conceptId).getRoot()), HttpStatus.OK);
     }
 
     public TreeResponse conceptTree(final String conceptId) {

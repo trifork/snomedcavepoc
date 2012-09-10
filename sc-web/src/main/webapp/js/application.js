@@ -2,7 +2,7 @@
 var module = angular.module('myApp', []);
 
 var treeHtml = "<span>" +
-    "<a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign\"></i>&nbsp;</a>" +
+    "<a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign treeexpander\"></i></a>" +
         "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId, endconcept: !conceptTree.hasChilds}\" style='cursor: pointer;'>{{conceptTree.name}}</span>" +
     "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
