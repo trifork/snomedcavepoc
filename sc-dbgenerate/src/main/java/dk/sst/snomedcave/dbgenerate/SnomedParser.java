@@ -94,7 +94,7 @@ public class SnomedParser {
     public void importConcept() {
         readTerms();
         long startTime = currentTimeMillis();
-        BeanReader in = getBeanReader("/data/0/sct_concepts_20120813T134009.txt", "concepts");
+        BeanReader in = getBeanReader("/data/0/sct_concepts.txt", "concepts");
 
         Object record;
         int count = 0;
@@ -142,7 +142,7 @@ public class SnomedParser {
     }
 
     public void importRelationships() {
-        BeanReader in = getBeanReader("/data/0/sct_relationships_20120813T134009.txt", "relationships");
+        BeanReader in = getBeanReader("/data/0/sct_relationships.txt", "relationships");
 
         Object record;
         long startTime = currentTimeMillis();
