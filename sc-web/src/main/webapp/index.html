@@ -55,7 +55,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="registration in identity.caveRegistrations" ng-class="{info: selectedRegistration == registration}">
+                    <tr ng-repeat="registration in identity.caveRegistrations" ng-class="{info: selectedRegistration == registration}" ng-click="selectRegistration(registration)">
                         <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="S&aelig;rlig kritisk cave registrering" tooltip-placement="right"></i></td>
                         <td>{{registration.allergyTerm}}</td>
                         <td>{{registration.reaction}}</td>
