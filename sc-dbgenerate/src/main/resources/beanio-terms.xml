@@ -1,30 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beanio xmlns="http://www.beanio.org/2012/03">
     <!--
-Begrebs ID;Fuldt specificerende term;Foretrukken term ID;Foretrukken term;;
-416098002;Drug allergy (disorder);4743381000005110;allergi over for l�gemiddel;;
-293959006;Alcohol metabolism modifier allergy (disorder);3844511000005110;allergi over for alkoholstofskiftemodifikator;;
-294420000;Alcohol products allergy (disorder);3951121000005110;allergi over for alkoholprodukter;;
-
-
+DESCRIPTIONID	DESCRIPTIONSTATUS	CONCEPTID	TERM	                                        INITIALCAPITALSTATUS	DESCRIPTIONTYPE	LANGUAGECODE
+411000005111	5	                202450006	Villonodular synovitis of other tarsal joint	0	                    1	            da-DK
+421000005117	0	                9284003	    Corpus cavernosum penis	                        0	                    1	            da-DK
+431000005119	5	                181422007	Hele prostata	                                0	                    1	            da-DK
     -->
     <stream name="terms" format="delimited">
         <parser>
-            <property name="delimiter" value=";"/>
+            <property name="delimiter" value="\t"/>
         </parser>
         <!-- 'class' binds the header record to a java.util.HashMap -->
         <record name="header" class="map">
-            <field name="ConceptId" literal="Begrebs ID" rid="true"/>
-            <field name="FullySpecifiedName" literal="Fuldt specificerende term" rid="true"/>
-            <field name="TermId" literal="Foretrukken term ID" rid="true"/>
-            <field name="Term" literal="Foretrukken term" rid="true"/>
+            <field name="DescriptionId" literal="DESCRIPTIONID" rid="true"/>
+            <field name="DescriptionStatus" literal="DESCRIPTIONSTATUS" rid="true"/>
+            <field name="ConceptId" literal="CONCEPTID" rid="true"/>
+            <field name="Term" literal="TERM" rid="true"/>
+            <field name="InitialCapitalStatus" literal="INITIALCAPITALSTATUS" rid="true"/>
+            <field name="DescriptionType" literal="DESCRIPTIONTYPE" rid="true"/>
+            <field name="LanguageCode" literal="LANGUAGECODE" rid="true"/>
         </record>
 
         <record name="term" class="map">
+            <field name="descriptionId"/>
+            <field name="descriptionStatus"/>
             <field name="conceptId"/>
-            <field name="fullyspecifiedName"/>
-            <field name="termId"/>
             <field name="term"/>
+            <field name="initialCapitalStatus" type="int"/>
+            <field name="descriptionType" type="int"/>
+            <field name="languageCode"/>
         </record>
     </stream>
 </beanio>
