@@ -151,14 +151,20 @@ module.directive("conceptTree", function($compile, $http) {
     };
 });
 
-module.directive('typeahead', function($http) {
+module.directive('typeahead', function($http, $log) {
     return {
         require: 'ngModel',
         link: function(scope, elm, attr, ngModel) {
             $(elm).typeahead({
                     source: function(query, process) {
+                        var query = scope.searchQuery
                         $http.get("/drugs/search?q=" + scope.drugQuery).success(function(data, status) {
-                            process(data)
+                            if (query === scope.searchQuery) {
+                                process(data)
+                            }
+                            else {
+                                $log.info("Threw away response for \"" + query + "\"")
+                            }
                         })
                     },
                     updater: function(item) {
