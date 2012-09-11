@@ -14,6 +14,8 @@ public class Initiator {
             System.out.println("args[" + i + "] = " + args[i]);
         }
 
+        logger.info("Using file.encoding=" + System.getProperty("file.encoding"));
+
         File db = new File(SnomedParser.STORE_DIR);
         logger.info("Using neo4j store path=" + db.getAbsolutePath());
         if (db.exists()) {
