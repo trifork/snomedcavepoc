@@ -96,6 +96,10 @@ public class DrugController {
             }
         }
 
+        if (causativesDrugAllergy.size() == 0) {
+            return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
+
         concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
         JsonObject response = new JsonObject();
