@@ -62,7 +62,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     })
 })
 
-module.directive("tooltip", function() {
+module.directive("tooltip", function($log) {
     return function(scope, element, attrs) {
         var placement = attrs.tooltipPlacement;
         scope.$watch(
@@ -73,6 +73,11 @@ module.directive("tooltip", function() {
                     placement: placement
                 })
             })
+        element.bind("click", function() {
+            $log.info("Will destroy " + element);
+            //element.tooltip('hide');
+            $(".tooltip").detach()
+        })
     }
 })
 
