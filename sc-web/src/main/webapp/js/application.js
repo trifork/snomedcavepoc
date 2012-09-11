@@ -156,14 +156,14 @@ module.directive('typeahead', function($http, $log) {
         require: 'ngModel',
         link: function(scope, elm, attr, ngModel) {
             $(elm).typeahead({
+
                     source: function(query, process) {
-                        var query = scope.searchQuery
-                        $http.get("/drugs/search?q=" + scope.drugQuery).success(function(data, status) {
-                            if (query === scope.searchQuery) {
+                        $http.get("/drugs/search?q=" + query).success(function(data, status) {
+                            if (query === scope.drugQuery) {
                                 process(data)
                             }
                             else {
-                                $log.info("Threw away response for \"" + query + "\"")
+                                $log.log("Threw away response for \"" + query + "\", actual: " + scope.drugQuery)
                             }
                         })
                     },
