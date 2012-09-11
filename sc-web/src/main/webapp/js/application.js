@@ -42,22 +42,21 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     $scope.$watch("identity", function(newValue, oldValue) {
         $scope.selectedRegistration = undefined
         if (newValue) {
-            $("#identity").slideUp()
+            $("#identity").hide()
             $("#identity").slideDown()
         }
         else {
-            $("#identity").slideUp()
+            $("#identity").hide()
         }
     })
     $scope.$watch("selectedRegistration", function(newValue, oldValue) {
         if (newValue) {
-            $("#conceptBrowser").hide()
-            $scope.selectedRegistration = newValue
-            $("#conceptBrowser").slideDown()
+            $("#registrationForm").hide()
+            $("#registrationForm").slideDown("slow")
 
         }
         else {
-            $("#conceptBrowser").slideUp()
+            $("#registrationForm").hide()
         }
     })
 })
