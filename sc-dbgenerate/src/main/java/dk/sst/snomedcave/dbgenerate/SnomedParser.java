@@ -67,7 +67,7 @@ public class SnomedParser {
     }
 
     private void readTerms() {
-        BeanReader in = getBeanReader("/data/20120828_SNOMEDCT_subset_med_allergier.csv", "terms");
+        BeanReader in = getBeanReader("/data/1000005/sct_descriptions.txt", "terms");
 
         Object record;
         while ((record = in.read()) != null) {
@@ -78,11 +78,7 @@ public class SnomedParser {
             else if ("term".equals(in.getRecordName())) {
                 final Map<String, Object> term = (Map<String, Object>) record;
 
-                try {
-                    conceptTerms.put((String) term.get("conceptId"), new String(((String) term.get("term")).getBytes(), "ISO-8859-1"));
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException("encoding", e);
-                }
+                conceptTerms.put((String) term.get("conceptId"), (String) term.get("term"));
             }
             else {
                 logger.warn("unable to parse \"" + record + "\"");
