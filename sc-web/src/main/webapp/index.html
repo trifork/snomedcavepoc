@@ -55,7 +55,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="registration in identity.caveRegistrations">
+                    <tr ng-repeat="registration in identity.caveRegistrations" ng-class="{info: selectedRegistration == registration}">
                         <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="S&aelig;rlig kritisk cave registrering" tooltip-placement="right"></i></td>
                         <td>{{registration.allergyTerm}}</td>
                         <td>{{registration.reaction}}</td>
@@ -78,7 +78,7 @@
         </div>
     </div>
     <hr/>
-    <div class="well" ng-show="selectedRegistration">
+    <div id="registrationForm" class="well">
         <button class="close" type="button" ng-click="hideRegistration()">x</button>
         <div class="row-fluid" cave-registration="selectedRegistration">
             <div class="span8">

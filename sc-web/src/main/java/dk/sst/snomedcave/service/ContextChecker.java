@@ -62,6 +62,30 @@ public class ContextChecker implements ApplicationListener<ApplicationContextEve
                         )
                 );
             }
+            if (identityRepository.getByCpr("1010101011") == null) {
+                identityRepository.save(
+                        new Identity(
+                                "1010101011",
+                                "Jane Poe",
+                                new HashSet<CaveRegistration>())
+                );
+            }
+            if (identityRepository.getByCpr("1010101012") == null) {
+                identityRepository.save(
+                        new Identity(
+                                "1010101012",
+                                "Robert Roe",
+                                new HashSet<CaveRegistration>())
+                );
+            }
+            if (identityRepository.getByCpr("1010101013") == null) {
+                identityRepository.save(
+                        new Identity(
+                                "1010101013",
+                                "Mark Moe",
+                                new HashSet<CaveRegistration>())
+                );
+            }
         }
     }
 
