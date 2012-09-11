@@ -51,6 +51,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     })
     $scope.$watch("selectedRegistration", function(newValue, oldValue) {
         if (newValue) {
+            $scope.allergyTree = undefined
             $("#registrationForm").hide()
             $("#registrationForm").slideDown("slow")
 
