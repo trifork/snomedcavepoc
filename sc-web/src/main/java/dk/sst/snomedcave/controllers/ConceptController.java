@@ -30,6 +30,7 @@ import java.util.*;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
 import static org.apache.commons.collections15.CollectionUtils.collect;
+import static org.apache.commons.collections15.CollectionUtils.filter;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 import static org.neo4j.graphdb.traversal.Evaluators.returnWhereEndNodeIs;
 
@@ -84,15 +85,22 @@ public class ConceptController {
     public ResponseEntity<String> nodeJson(@RequestParam("id") String conceptId) {
         Gson gson = new GsonBuilder().create();
         final Concept concept = conceptRepository.getByConceptId(conceptId);
+        final Set<ConceptRelation> childs = new HashSet<ConceptRelation>(concept.getChilds());
+        filter(childs, new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                return shouldInclude(relation);
+            }
+        });
         return new ResponseEntity<String>(gson.toJson(
                 new ConceptNode(
                         concept.getConceptId(),
                         concept.getTerm(),
-                        collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
+                        collect(childs, new Transformer<ConceptRelation, ConceptNode>() {
                             @Override
                             public ConceptNode transform(ConceptRelation relation) {
                                 Concept child = get(get(relation).getChild());
-                                return new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0);
+                                return new ConceptNode(child.getConceptId(), child.getTerm(), childs.size() > 0);
                             }
                         })))
                 , HttpStatus.OK);
@@ -113,7 +121,7 @@ public class ConceptController {
         List<Concept> levels = getThreeLevelsUpFrom(target);
         reverse(levels);
         final Set<ConceptRelation> rootChilds = new HashSet<ConceptRelation>(target.getChilds());
-        CollectionUtils.filter(rootChilds, new Predicate<ConceptRelation>() {
+        filter(rootChilds, new Predicate<ConceptRelation>() {
             @Override
             public boolean evaluate(ConceptRelation relation) {
                 return shouldInclude(relation);
@@ -126,7 +134,7 @@ public class ConceptController {
                     @Override
                     public ConceptNode transform(ConceptRelation relation) {
                         final Concept concept = get(get(relation).getChild());
-                        return new ConceptNode(concept.getConceptId(), concept.getTerm(), concept.getChilds().size() > 0);
+                        return new ConceptNode(concept.getConceptId(), concept.getTerm(), rootChilds.size() > 0);
                     }
                 }));
 
@@ -138,7 +146,7 @@ public class ConceptController {
             root = new ConceptNode(concept.getConceptId(), concept.getTerm(), root);
             if (i == 1) { //First parent
                 final Set<ConceptRelation> childs = new HashSet<ConceptRelation>(concept.getChilds());
-                CollectionUtils.filter(childs, new Predicate<ConceptRelation>() {
+                filter(childs, new Predicate<ConceptRelation>() {
                     @Override
                     public boolean evaluate(ConceptRelation relation) {
                         return shouldInclude(relation) && !get(get(relation).getChild()).getConceptId().equals(conceptId);
