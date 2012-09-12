@@ -59,7 +59,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="registration in identity.caveRegistrations" ng-class="{info: selectedRegistration == registration}" ng-click="selectRegistration(registration)">
-                        <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="S&aelig;rlig kritisk cave registrering" tooltip-placement="right"></i></td>
+                        <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="Automatisk ordinationsadvarsel" tooltip-placement="right"></i></td>
                         <td>{{registration.allergyTerm}}</td>
                         <td>{{registration.reaction}}</td>
                         <td>{{registration.grade}}</td>
@@ -94,7 +94,7 @@
                 <div concept-tree="allergyTree" selected-registration="selectedRegistration"></div>
             </div>
             <div class="span4 pull-right">
-                <label class="checkbox">
+                <label class="checkbox" tooltip="CAVE<br/>S&aelig;t fluebenet for automatisk ordinationsadvarsel" tooltop-placement="top">
                     <i class="icon-warning-sign"></i>&nbsp;Advarsel
                     <input type="checkbox" ng-model="registration.warning"/>
                 </label>
