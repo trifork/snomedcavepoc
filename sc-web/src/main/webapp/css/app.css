@@ -30,3 +30,7 @@ div.savedindicator.animation {
 div.savedindicator.active {
     top: 0px;
 }
+
+span.foundconcept {
+    font-weight: bold;
+}

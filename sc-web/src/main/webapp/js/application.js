@@ -1,13 +1,15 @@
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', []);
-
+//ng-class="{info: selectedRegistration == registration}"
 var treeHtml = "<span>" +
     "<a ng-click='expandToggle(conceptTree)' ng-show='conceptTree.hasChilds'><i class=\"icon-{{plusMinus(conceptTree)}}-sign treeexpander\"></i></a>" +
-        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId, endconcept: !conceptTree.hasChilds}\" style='cursor: pointer;'>{{conceptTree.name}}</span>" +
+        "<span ng-click='selectConcept(conceptTree)' ng-class=\"{selected: conceptTree.conceptId == selectedRegistration.allergyId, endconcept: !conceptTree.hasChilds}\" style='cursor: pointer;'>" +
+            "<span ng-class='{foundconcept: conceptTree.conceptId == foundConcept}'>{{conceptTree.name}}</span>" +
+        "</span>" +
     "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
         "<li ng-repeat=\"child in conceptTree.childs\">" +
-            "<span concept-tree=\"child\" selected-registration=\"selectedRegistration\"></span>" +
+            "<span concept-tree=\"child\" selected-registration=\"selectedRegistration\" found-concept=\"foundConcept\"></span>" +
         "</li>" +
     "</ul>"
 
@@ -113,8 +115,8 @@ module.directive("caveRegistration", function($http, $log) {
         }
 
         function getConcept(allergyId) {
-            selectedConceptId = allergyId
             $http.get("/concepts/tree?id=" + allergyId).success(function(data, status) {
+                scope.foundConceptId = allergyId
                 scope.allergyTree = data
             })
         }
@@ -152,7 +154,8 @@ module.directive("conceptTree", function($compile, $http) {
         controller: ConceptTreeCtrl,
         scope: {
             conceptTree: "=",
-            selectedRegistration: "="
+            selectedRegistration: "=",
+            foundConcept: "="
         },
         link: function(scope, elm, attrs) {
             return elm.append($compile(treeHtml)(scope))
