@@ -70,6 +70,13 @@ public class ConceptController {
         return isAType;
     }
 
+    private ConceptNode toConceptNode(Concept concept) {
+        return new ConceptNode(
+                concept.getConceptId(),
+                concept.getTerm(),
+                false);
+    }
+
     @RequestMapping(value = "search", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> search(@RequestParam("query") String query) {
         Concept concept = conceptRepository.getByFullyspecifiedName(query);
@@ -116,7 +123,7 @@ public class ConceptController {
         Concept target = conceptRepository.getByConceptId(conceptId);
         if (target == null) {
             logger.debug("Did not find any concepts with conceptId=" + conceptId);
-            return null;
+            return new TreeResponse(null);
         }
         List<Concept> levels = getThreeLevelsUpFrom(target);
         reverse(levels);
