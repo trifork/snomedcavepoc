@@ -8,7 +8,9 @@ import org.neo4j.unsafe.batchinsert.*;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static java.lang.System.currentTimeMillis;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
@@ -21,6 +23,7 @@ public class SnomedParser {
 
     Map<String, Long> conceptIds = new HashMap<String, Long>();
     Map<String, String> conceptTerms = new HashMap<String, String>();
+    Set<String> deadAllergies = new HashSet<String>();
 
     Map<String, String> configConcept = new HashMap<String, String>() {{
         put("type", "exact");
@@ -87,8 +90,30 @@ public class SnomedParser {
         }
     }
 
+    private void readDeadAllergies() {
+        BeanReader in = getBeanReader("/data/dead_allergies.csv", "deadallergies");
+
+        Object record;
+        while ((record = in.read()) != null) {
+            if ("header".equals(in.getRecordName())) {
+                //Map<String, Object> header = (Map<String, Object>) record;
+                logger.debug("Parsing header: ignoring");
+            }
+            else if ("deadallergy".equals(in.getRecordName())) {
+                final Map<String, Object> term = (Map<String, Object>) record;
+
+                deadAllergies.add((String) term.get("conceptId"));
+            }
+            else {
+                logger.warn("unable to parse \"" + record + "\"");
+            }
+
+        }
+    }
+
     public void importConcept() {
         readTerms();
+        readDeadAllergies();
         long startTime = currentTimeMillis();
         BeanReader in = getBeanReader("/data/0/sct_concepts.txt", "concepts");
 
@@ -120,6 +145,10 @@ public class SnomedParser {
     private long saveConcept(final Map<String, Object> concept) {
         concept.put("__type__", "dk.sst.snomedcave.model.Concept");
         final String conceptId = (String) concept.get("conceptId");
+        if (deadAllergies.contains(conceptId)) {
+            concept.put("status", 42l);
+            logger.info("Concept " + conceptId + " got status 42");
+        }
         concept.put("term", conceptTerms.containsKey(conceptId) ? conceptTerms.get(conceptId) : "");
         final long nodeId = inserter.createNode(concept);
         conceptIds.put(conceptId, nodeId);
