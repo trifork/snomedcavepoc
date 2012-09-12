@@ -19,6 +19,7 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http, $time
     }
     $scope.saveIdentity = function() {
         $http.put("/identities/" + $scope.identity.cpr, $scope.identity).success(function(data, status) {
+            $(".savedindicator").addClass("animation")
             $(".savedindicator").addClass("active")
             $timeout(function () {
                 $(".savedindicator").removeClass("active")
