@@ -6,6 +6,7 @@ import dk.sst.snomedcave.dao.ConceptRelationRepository;
 import dk.sst.snomedcave.dao.ConceptRepository;
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
+import org.apache.commons.collections15.CollectionUtils;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.apache.log4j.Logger;
@@ -91,10 +92,15 @@ public class ConceptController {
 
     private ConceptNode toConceptNodeWithChilds(Concept concept, final ConceptNode included) {
         get(concept);
-        //TODO: filter childs
+        final Collection<ConceptRelation> childs = CollectionUtils.select(concept.getChilds(), new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                return shouldInclude(relation);
+            }
+        });
         return toConceptNodeWithChilds(
                 concept,
-                collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
+                collect(childs, new Transformer<ConceptRelation, ConceptNode>() {
                     @Override
                     public ConceptNode transform(ConceptRelation relation) {
                         final Concept child = get(relation).getChild();
