@@ -123,4 +123,8 @@ public class Concept extends NodeObject {
                 append("childs", childs).
                 toString();
     }
+
+    public void setChilds(Set<ConceptRelation> childs) {
+        this.childs = childs;
+    }
 }

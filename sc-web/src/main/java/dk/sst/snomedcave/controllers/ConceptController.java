@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.inject.Inject;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.reverse;
 import static java.util.Collections.sort;
-import static org.apache.commons.collections15.CollectionUtils.collect;
+import static org.apache.commons.collections15.CollectionUtils.*;
 import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 import static org.neo4j.graphdb.traversal.Evaluators.returnWhereEndNodeIs;
 
@@ -57,6 +58,8 @@ public class ConceptController {
 
     private Concept isAType;
 
+    private Gson gson = new GsonBuilder().create();
+
     final TraversalDescription td = Traversal.description()
             .breadthFirst()
             .relationships(withName("childs"), Direction.OUTGOING)
@@ -67,6 +70,54 @@ public class ConceptController {
             isAType = conceptRepository.getByConceptId("116680003");
         }
         return isAType;
+    }
+
+    private ConceptNode toConceptNode(Concept concept) {
+        get(concept);
+        boolean hasChilds = exists(concept.getChilds(), new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                return shouldInclude(relation);
+            }
+        });
+        return new ConceptNode(
+                concept.getConceptId(),
+                concept.getTerm(),
+                hasChilds);
+    }
+
+    private ConceptNode toConceptNodeWithChilds(Concept concept) {
+        return toConceptNodeWithChilds(concept, new ConceptNode("", null, false));
+    }
+
+    private ConceptNode toConceptNodeWithChilds(Concept concept, final ConceptNode included) {
+        get(concept);
+        final Collection<ConceptRelation> childs = CollectionUtils.select(concept.getChilds(), new Predicate<ConceptRelation>() {
+            @Override
+            public boolean evaluate(ConceptRelation relation) {
+                return shouldInclude(relation);
+            }
+        });
+        return toConceptNodeWithChilds(
+                concept,
+                collect(childs, new Transformer<ConceptRelation, ConceptNode>() {
+                    @Override
+                    public ConceptNode transform(ConceptRelation relation) {
+                        final Concept child = get(relation).getChild();
+                        return get(child).getConceptId().equals(included.conceptId) ? included : toConceptNode(child);
+                    }
+                })
+        );
+    }
+
+    private ConceptNode toConceptNodeWithChilds(Concept concept, Collection<ConceptNode> childs) {
+        get(concept);
+        return new ConceptNode(
+                concept.getConceptId(),
+                concept.getTerm(),
+                childs
+        );
+
     }
 
     @RequestMapping(value = "search", produces = "application/json;charset=utf-8")
@@ -82,25 +133,13 @@ public class ConceptController {
 
     @RequestMapping(value = "node", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> nodeJson(@RequestParam("id") String conceptId) {
-        Gson gson = new GsonBuilder().create();
-        final Concept concept = conceptRepository.getByConceptId(conceptId);
         return new ResponseEntity<String>(gson.toJson(
-                new ConceptNode(
-                        concept.getConceptId(),
-                        concept.getTerm(),
-                        collect(concept.getChilds(), new Transformer<ConceptRelation, ConceptNode>() {
-                            @Override
-                            public ConceptNode transform(ConceptRelation relation) {
-                                Concept child = get(get(relation).getChild());
-                                return new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0);
-                            }
-                        })))
-                , HttpStatus.OK);
+                toConceptNodeWithChilds(conceptRepository.getByConceptId(conceptId))),
+                HttpStatus.OK);
     }
 
     @RequestMapping(value = "tree", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> treeJson(@RequestParam("id") String conceptId) {
-        Gson gson = new GsonBuilder().create();
         return new ResponseEntity<String>(gson.toJson(conceptTree(conceptId).getRoot()), HttpStatus.OK);
     }
 
@@ -108,50 +147,23 @@ public class ConceptController {
         Concept target = conceptRepository.getByConceptId(conceptId);
         if (target == null) {
             logger.debug("Did not find any concepts with conceptId=" + conceptId);
-            return null;
+            return new TreeResponse(null);
         }
         List<Concept> levels = getThreeLevelsUpFrom(target);
         reverse(levels);
-        final Set<ConceptRelation> rootChilds = new HashSet<ConceptRelation>(target.getChilds());
-        CollectionUtils.filter(rootChilds, new Predicate<ConceptRelation>() {
-            @Override
-            public boolean evaluate(ConceptRelation relation) {
-                return shouldInclude(relation);
-            }
-        });
-        ConceptNode root = new ConceptNode(
-                target.getConceptId(),
-                target.getTerm(),
-                collect(rootChilds, new Transformer<ConceptRelation, ConceptNode>() {
-                    @Override
-                    public ConceptNode transform(ConceptRelation relation) {
-                        final Concept concept = get(get(relation).getChild());
-                        return new ConceptNode(concept.getConceptId(), concept.getTerm(), concept.getChilds().size() > 0);
-                    }
-                }));
+        ConceptNode root = toConceptNodeWithChilds(target);
 
         for (int i = 1; i <= 3; i++) {
             if (i >= levels.size()) {
                 break;
             }
             Concept concept = levels.get(i);
-            root = new ConceptNode(concept.getConceptId(), concept.getTerm(), root);
-            if (i == 1) { //First parent
-                final Set<ConceptRelation> childs = new HashSet<ConceptRelation>(concept.getChilds());
-                CollectionUtils.filter(childs, new Predicate<ConceptRelation>() {
-                    @Override
-                    public boolean evaluate(ConceptRelation relation) {
-                        return shouldInclude(relation) && !get(get(relation).getChild()).getConceptId().equals(conceptId);
-                    }
-                });
-                for (ConceptRelation relation : childs) {
-                    Concept child = get(get(relation).getChild());
-                    if (!child.getConceptId().equals(root.conceptId)) {
-                        root.childs.add(new ConceptNode(child.getConceptId(), child.getTerm(), child.getChilds().size() > 0));
-                    }
-                }
+            if (i == 1) {
+                root = toConceptNodeWithChilds(concept, root);
             }
-            sort(root.childs, CONCEPTNAME_COMPARATOR);
+            else {
+                root = toConceptNodeWithChilds(concept, asList(root));
+            }
         }
 
         return new TreeResponse(root);
@@ -187,10 +199,27 @@ public class ConceptController {
     }
 
     private ConceptRelation get(ConceptRelation relation) {
-        return conceptRelationRepository.findOne(relation.getNodeId());
+        if (relation.getRelationId() == null) {
+            ConceptRelation dbRelation = conceptRelationRepository.findOne(relation.getNodeId());
+            relation.setRelationId(dbRelation.getRelationId());
+            relation.setChild(dbRelation.getChild());
+            relation.setType(dbRelation.getType());
+        }
+        return relation;
     }
 
     private Concept get(Concept concept) {
-        return conceptRepository.findOne(concept.getNodeId());
+        if (concept.getConceptId() == null) {
+            Concept dbConcept = conceptRepository.findOne(concept.getNodeId());
+            concept.setConceptId(dbConcept.getConceptId());
+            concept.setSnomedId(dbConcept.getSnomedId());
+            concept.setCtv3Id(dbConcept.getCtv3Id());
+            concept.setFullyspecifiedName(dbConcept.getFullyspecifiedName());
+            concept.setPrimitive(dbConcept.isPrimitive());
+            concept.setStatus(dbConcept.getStatus());
+            concept.setTerm(dbConcept.getTerm());
+            concept.setChilds(dbConcept.getChilds());
+        }
+        return concept;
     }
 }
