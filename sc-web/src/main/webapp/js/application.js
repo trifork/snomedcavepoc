@@ -11,7 +11,7 @@ var treeHtml = "<span>" +
         "</li>" +
     "</ul>"
 
-module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
+module.controller("IdentityCtrl", function($scope, $location, $log, $http, $timeout) {
     $scope.findIdentity = function() {
         $http.get("/identities/" + $scope.identityCpr).success(function(data, status) {
             $scope.identity = data;
@@ -19,7 +19,10 @@ module.controller("IdentityCtrl", function($scope, $location, $log, $http) {
     }
     $scope.saveIdentity = function() {
         $http.put("/identities/" + $scope.identity.cpr, $scope.identity).success(function(data, status) {
-            //TODO: show identity is saved
+            $(".savedindicator").addClass("active")
+            $timeout(function () {
+                $(".savedindicator").removeClass("active")
+            }, 5000);
         })
     }
 

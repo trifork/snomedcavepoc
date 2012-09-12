@@ -9,3 +9,24 @@
 .treeexpander {
     padding-right: 3px;
 }
+div.savedindicator {
+    text-align: center;
+    position: fixed;
+    top: -27px;
+    width: 200px;
+    left: 50%;
+    margin-left: -100px;
+    background-color: #dff0d8;
+    padding: 3px 10px 3px 10px;
+    border: 1px gray solid;
+    border-top: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+div.savedindicator.animation {
+    -webkit-transition: top 1s linear;
+}
+div.savedindicator.active {
+    top: 0px;
+}
