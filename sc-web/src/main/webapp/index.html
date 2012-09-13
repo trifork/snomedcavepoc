@@ -11,6 +11,7 @@
     <title>Cave register</title>
 </head>
 <body>
+<div class="savedindicator"><i class="icon-ok"></i>&nbsp;Gemt!</div>
 <div class="container-fluid" ng-controller="IdentityCtrl">
     <div class="navbar">
         <div class="navbar-inner">
@@ -19,6 +20,7 @@
             </form>
         </div>
     </div>
+
     <div class="alert fade in" ng-init="dirty=false" ng-show="dirty">
         <p>Er ikke gemt</p>
 
@@ -56,7 +58,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="registration in identity.caveRegistrations" ng-class="{info: selectedRegistration == registration}" ng-click="selectRegistration(registration)">
-                        <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="S&aelig;rlig kritisk cave registrering" tooltip-placement="right"></i></td>
+                        <td><i class="icon-warning-sign" ng-show="registration.warning" tooltip="Automatisk ordinationsadvarsel" tooltip-placement="right"></i></td>
                         <td>{{registration.allergyTerm}}</td>
                         <td>{{registration.reaction}}</td>
                         <td>{{registration.grade}}</td>
@@ -87,10 +89,10 @@
                     <button class="btn" ng-click="findDrug(drugQuery)"><i class="icon-search"></i>&nbsp;S&oslash;g</button>
                 </div>
 
-                <div concept-tree="allergyTree" selected-registration="selectedRegistration"></div>
+                <div concept-tree="allergyTree" selected-registration="selectedRegistration" found-concept="foundConceptId"></div>
             </div>
             <div class="span4 pull-right">
-                <label class="checkbox">
+                <label class="checkbox" tooltip="CAVE<br/>S&aelig;t fluebenet for automatisk ordinationsadvarsel" tooltop-placement="top">
                     <i class="icon-warning-sign"></i>&nbsp;Advarsel
                     <input type="checkbox" ng-model="registration.warning"/>
                 </label>

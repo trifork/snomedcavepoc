@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beanio xmlns="http://www.beanio.org/2012/03">
+    <!--
+Begrebs ID;Fuldt specificerende term;Foretrukken term ID;Foretrukken term;
+293702004;Chenodeoxycholic and ursodeoxycholic acid allergy (disorder);3,84786E+15;allergi over for chenodeoxycholsyre og ursodeoxycholsyre;    -->
+    <stream name="deadallergies" format="delimited">
+        <parser>
+            <property name="delimiter" value=";"/>
+        </parser>
+        <!-- 'class' binds the header record to a java.util.HashMap -->
+        <record name="header" class="map">
+            <field name="ConceptId" literal="Begrebs ID" rid="true"/>
+            <field name="FullyspecifiedName" literal="Fuldt specificerende term" rid="true"/>
+            <field name="preferredNameId" literal="Foretrukken term ID" rid="true"/>
+            <field name="preferredName" literal="Foretrukken term" rid="true"/>
+        </record>
+
+        <record name="deadallergy" class="map">
+            <field name="conceptId"/>
+            <field name="fullyspecifiedName"/>
+            <field name="preferredNameId"/>
+            <field name="preferredName"/>
+        </record>
+    </stream>
+</beanio>

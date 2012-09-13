@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beanio xmlns="http://www.beanio.org/2012/03">
+    <!--
+    substans	conceptid
+    ^110^tin	8534003
+-->
     <stream name="drugs" format="delimited">
         <parser>
             <property name="delimiter" value="\t"/>
         </parser>
         <!-- 'class' binds the header record to a java.util.HashMap -->
         <record name="header" class="map">
-            <field name="drugid" literal="drugid" rid="true"/>
-            <field name="drugname" literal="drugname" rid="true"/>
-            <field name="substans" literal="substans" rid="true"/>
-            <field name="conceptid" literal="conceptid" rid="true"/>
+            <field name="Substans" literal="substans" rid="true"/>
+            <field name="Conceptid" literal="conceptid" rid="true"/>
         </record>
 
         <record name="drug" class="map">
-            <field name="drugId"/>
-            <field name="drugName"/>
-            <field name="substance"/>
+            <field name="name"/>
             <field name="conceptId"/>
         </record>
     </stream>
