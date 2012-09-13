@@ -208,7 +208,7 @@ public class SnomedParser {
     }
 
     public void importSubtances() {
-        BeanReader in = getBeanReader("/data/ihs_lm_conceptid_dump.txt", "drugs");
+        BeanReader in = getBeanReader("/data/drugs.txt", "drugs");
 
         Object record;
         long startTime = currentTimeMillis();
@@ -223,9 +223,6 @@ public class SnomedParser {
                 final Map<String, Object> drug = (Map<String, Object>) record;
 
                 drug.put("__type__", "dk.sst.snomedcave.model.Drug");
-                drug.put("name", String.format("%s (%s)", drug.get("drugName"), drug.get("substance")));
-                drug.remove("drugName");
-                drug.remove("substance");
 
                 final long conceptNodeId = getNodeId(drug.get("conceptId"));
                 drug.remove("conceptId");
@@ -236,7 +233,6 @@ public class SnomedParser {
 
                 drugIndex.add(nodeId, new HashMap<String, Object>() {{
                     put("__type__", "dk.sst.snomedcave.model.Drug");
-                    put("drugId", drug.get("drugId"));
                 }});
                 drugFullIndex.add(nodeId, new HashMap<String, Object>() {{
                     put("name", drug.get("name"));
