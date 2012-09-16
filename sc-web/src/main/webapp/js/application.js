@@ -106,12 +106,15 @@ module.directive("caveRegistration", function($http, $log) {
             }
         }
 
-        scope.findDrug = function(query) {
+        scope.findDrug = function (query) {
             scope.allergyTree = undefined;
             $log.info("Will lookup " + query)
-            $http.get("/drugs/concepttree?name=" + query).success(function(allergyId, status) {
+            $http.get("/drugs/concepttree?name=" + query).success(function (allergyId, status) {
                 getConcept(allergyId)
-            })
+            }).error(function(data, status) {
+                    scope.foundConceptId = 0;
+                    scope.allergyTree = []
+                })
         }
 
         function getConcept(allergyId) {
@@ -119,6 +122,10 @@ module.directive("caveRegistration", function($http, $log) {
                 scope.foundConceptId = allergyId
                 scope.allergyTree = data
             })
+        }
+
+        scope.hasResult = function() {
+            return scope.allergyTree != undefined && scope.allergyTree.length === 0;
         }
     }
 })
