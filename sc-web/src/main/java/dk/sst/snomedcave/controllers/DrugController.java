@@ -102,9 +102,7 @@ public class DrugController {
 
         concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
-        JsonObject response = new JsonObject();
-        response.addProperty("allergyId", concept.getConceptId());
-        return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
+        return new ResponseEntity<String>(gson.toJson(concept.getConceptId()), HttpStatus.OK);
     }
 
     private long causativeAgentId() {
