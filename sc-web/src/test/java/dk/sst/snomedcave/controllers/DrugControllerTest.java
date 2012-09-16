@@ -36,10 +36,10 @@ public class DrugControllerTest {
 
     @Test
     public void willAlwaysReturnNonCombinedDrug() throws Exception {
-        for (int i = 0; i < 10; i++) {
-            String json = drugController.tree("Paracetamol").getBody();
-            assertNotNull(json);
-            assertEquals(i + " of 10", "293584003", gson.fromJson(json, String.class));
+        for (int i = 0; i < 100; i++) {
+            String allergyId = drugController.tree("Paracetamol").getBody();
+            assertNotNull(allergyId);
+            assertEquals(i + " of 10", "293584003", allergyId);
         }
     }
 }
