@@ -109,8 +109,8 @@ module.directive("caveRegistration", function($http, $log) {
         scope.findDrug = function(query) {
             scope.allergyTree = undefined;
             $log.info("Will lookup " + query)
-            $http.get("/drugs/concepttree?name=" + query).success(function(drug, status) {
-                getConcept(drug.allergyId)
+            $http.get("/drugs/concepttree?name=" + query).success(function(allergyId, status) {
+                getConcept(allergyId)
             })
         }
 
