@@ -77,6 +77,11 @@ public class DrugController {
             public boolean evaluate(ConceptRelation relation) {
                 if (conceptRepository.findOne(relation.getType().getNodeId()).getNodeId().equals(causativeAgentId())) {
                     Node childNode = neo4jTemplate.getNode(relation.getChild().getNodeId());
+                    Concept child = conceptRepository.findOne(childNode.getId());
+                    if (child.getStatus() != 0) {
+                        logger.debug("Filtered out child with status=" + child.getStatus() + " for " + child.getTerm());
+                        return false;
+                    }
 
                     Traverser paths = td.traverse(childNode);
                     List<Path> pathList = IteratorUtils.toList(paths.iterator());
@@ -102,9 +107,7 @@ public class DrugController {
 
         concept = conceptRepository.findOne(causativesDrugAllergy.get(0).getChild().getNodeId());
 
-        JsonObject response = new JsonObject();
-        response.addProperty("allergyId", concept.getConceptId());
-        return new ResponseEntity<String>(gson.toJson(response), HttpStatus.OK);
+        return new ResponseEntity<String>(concept.getConceptId(), HttpStatus.OK);
     }
 
     private long causativeAgentId() {
