@@ -8,7 +8,7 @@ var treeHtml = "<span>" +
         "</span>" +
     "</span>" +
     "<ul class='unstyled' style='padding-left: 20px;'>" +
-        "<li ng-repeat=\"child in conceptTree.childs\">" +
+        "<li ng-repeat=\"child in conceptTree.childs | orderBy:'name'\">" +
             "<span concept-tree=\"child\" selected-registration=\"selectedRegistration\" found-concept=\"foundConcept\"></span>" +
         "</li>" +
     "</ul>"
@@ -93,6 +93,7 @@ module.directive("caveRegistration", function($http, $log) {
 
         scope.$watch(attrs.caveRegistration, function(value) {
             registration = value;
+            scope.drugQuery = ""
             update()
         })
 
