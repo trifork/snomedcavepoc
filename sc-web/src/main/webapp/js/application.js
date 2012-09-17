@@ -93,6 +93,7 @@ module.directive("caveRegistration", function($http, $log) {
 
         scope.$watch(attrs.caveRegistration, function(value) {
             registration = value;
+            scope.drugQuery = ""
             update()
         })
 
