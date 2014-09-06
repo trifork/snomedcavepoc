@@ -2,10 +2,13 @@ package dk.sst.snomedcave.controllers;
 
 import dk.sst.snomedcave.model.Concept;
 import dk.sst.snomedcave.model.ConceptRelation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class ConceptNodeTest {
 
     @Test

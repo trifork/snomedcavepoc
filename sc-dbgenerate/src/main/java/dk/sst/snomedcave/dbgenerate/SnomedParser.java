@@ -6,7 +6,6 @@ import org.beanio.StreamFactory;
 import org.neo4j.unsafe.batchinsert.*;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,7 +16,8 @@ import static org.neo4j.graphdb.DynamicRelationshipType.withName;
 
 public class SnomedParser {
     private static Logger logger = Logger.getLogger(SnomedParser.class);
-    public static final String STORE_DIR = "/var/sc-poc/data.db";
+    public static final String SC_HOME = System.getProperty("user.home") + "/.sc-poc";
+    public static final String STORE_DIR = SC_HOME + "/data.db";
 
     StreamFactory factory = StreamFactory.newInstance();
 
@@ -65,7 +65,7 @@ public class SnomedParser {
 
     private BeanReader getBeanReader(String classpathPath, String config) {
         File file = new File(getClass().getResource(classpathPath).getFile());
-        factory.load("/Users/mwl/IdeaProjects/SnomedCave/snomedcavepoc/sc-dbgenerate/src/main/resources/beanio-" + config + ".xml");
+        factory.loadResource("beanio-" + config + ".xml");
         return factory.createReader(config, file);
     }
 

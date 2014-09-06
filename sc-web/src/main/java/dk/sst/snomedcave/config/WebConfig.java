@@ -21,7 +21,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private static Logger logger = Logger.getLogger(WebConfig.class);
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/img/*").addResourceLocations("/img/");
+        registry.addResourceHandler("/**").addResourceLocations("/");
     }
 
     @Bean
@@ -41,11 +41,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 return null;
             }
         };
-    }
-
-    @Bean
-    public StaticController staticController() {
-        return new StaticController();
     }
 
     @Bean

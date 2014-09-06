@@ -27,5 +27,11 @@
             <artifactId>mockito-core</artifactId>
             <version>1.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>snomedcavepoc</groupId>
+            <artifactId>sc-dbgenerate</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

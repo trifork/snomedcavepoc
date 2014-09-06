@@ -2,6 +2,7 @@ package dk.sst.snomedcave.config;
 
 import dk.sst.snomedcave.service.ContextChecker;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

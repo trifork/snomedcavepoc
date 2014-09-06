@@ -18,8 +18,11 @@
     <profiles>
         <profile>
             <id>generate-db</id>
+            <activation>
+                <file><missing>${user.home}/.sc-poc</missing></file>
+            </activation>
             <build>
-                <defaultGoal>install</defaultGoal>
+                <defaultGoal>package</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
